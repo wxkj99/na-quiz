@@ -3,7 +3,7 @@ const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^
 
 document.querySelectorAll('.question').forEach((q, i) => {
   const num = document.createElement('span');
-  num.style.cssText = 'float:right;font-size:0.75rem;color:var(--muted);margin-top:0.2rem;';
+  num.style.cssText = 'position:absolute;bottom:0.4rem;right:0.6rem;font-size:0.75rem;color:var(--muted);';
   const id = prefix + '-' + (i + 1);
   num.textContent = id;
   q.style.position = 'relative';
