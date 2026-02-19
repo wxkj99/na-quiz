@@ -35,7 +35,14 @@
       "Bash(git -C \"D:/math/NA\" commit -m \"max-width 1050px\")",
       "Bash(git -C \"D:/math/NA\" commit -m \"fix mobile blank input width\")",
       "Bash(git -C \"D:/math/NA\" commit -m \"fix mobile overflow\")",
-      "Bash(git -C \"D:/math/NA\" commit -m \"font controls hidden by default\")"
+      "Bash(git -C \"D:/math/NA\" commit -m \"font controls hidden by default\")",
+      "Bash(git -C \"D:/blog\" log --oneline -3)",
+      "Bash(gh api:*)",
+      "Bash(curl:*)",
+      "Bash(git -C \"D:/blog\" rm -r qr)",
+      "Bash(git -C \"D:/blog\" submodule add https://github.com/wxkj99/QR-view-simple.git qr)",
+      "Bash(git -C \"D:/blog\" commit -m \"convert qr to submodule\")",
+      "Bash(git -C \"D:/math/NA\" commit -m \"add least squares section to ch02\")"
     ]
   }
 }

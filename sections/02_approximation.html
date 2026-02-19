@@ -192,6 +192,51 @@
   </div>
 </div>
 
+<h2>2.4 最小二乘问题的数值解法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(A\in\mathbb{R}^{m\times n}\)（\(m>n\)），证明 \(x^*\) 是最小二乘问题 \(\min_x\|Ax-b\|_2^2\) 的解，当且仅当 \(A^T(Ax^*-b)=0\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(f(x)=\|Ax-b\|_2^2=(Ax-b)^T(Ax-b)\)，对任意方向 \(d\)：<br><br>
+    \(f(x^*+td)=\|A(x^*+td)-b\|_2^2=f(x^*)+2t(Ax^*-b)^TAd+t^2\|Ad\|_2^2\)。<br><br>
+    <b>必要性：</b>若 \(x^*\) 是极小值点，则 \(\nabla f(x^*)=2A^T(Ax^*-b)=0\)。<br><br>
+    <b>充分性：</b>若 \(A^T(Ax^*-b)=0\)，则对任意 \(d\)：\(f(x^*+d)=f(x^*)+\|Ad\|_2^2\ge f(x^*)\)，故 \(x^*\) 是全局最小值点。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">为什么直接用法方程 \(A^TAx=A^Tb\) 求解最小二乘问题在数值上不稳定？QR 分解如何改善这一问题？</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>法方程的不稳定性：</b>\(\kappa_2(A^TA)=\kappa_2(A)^2\)，条件数平方放大，当 \(A\) 本身条件数较大时，\(A^TA\) 的条件数极大，导致解对舍入误差高度敏感。<br><br>
+    <b>QR 分解：</b>对 \(A\) 做 QR 分解 \(A=QR\)（\(Q\) 列正交，\(R\) 上三角），则 \(\|Ax-b\|_2=\|QRx-b\|_2=\|Rx-Q^Tb\|_2\)（正交变换不改变范数）。最小二乘解满足 \(Rx^*=Q^Tb\)，条件数为 \(\kappa_2(R)=\kappa_2(A)\)，避免了平方放大。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(A=QR\)，其中 \(Q\in\mathbb{R}^{m\times n}\) 列正交（\(Q^TQ=I\)），\(R\in\mathbb{R}^{n\times n}\) 上三角且可逆，证明最小二乘解为 \(x^*=R^{-1}Q^Tb\)。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    将 \(A=QR\) 代入法方程 \(A^T(Ax^*-b)=0\)：<br><br>
+    \((QR)^T(QRx^*-b)=0 \Rightarrow R^TQ^T(QRx^*-b)=0\)。<br><br>
+    因 \(Q^TQ=I\)：\(R^T(Rx^*-Q^Tb)=0\)。<br><br>
+    \(R^T\) 可逆（\(R\) 可逆），故 \(Rx^*=Q^Tb\)，即 \(x^*=R^{-1}Q^Tb\)。
+  </div>
+</div>
+
 <script src="quiz.js"></script>
 </body>
 </html>
