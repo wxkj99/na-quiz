@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"D:/math/NA\" remote add origin https://github.com/wxkj99/na-quiz.git)",
+      "Bash(git -C \"D:/math/NA\" branch -M main)",
+      "Bash(git -C \"D:/math/NA\" push -u origin main)",
+      "Bash(git -C \"D:/programming/QR-viewer-simple\" log --oneline -5)",
+      "Bash(git -C \"D:/programming/QR-viewer-simple\" remote -v)",
+      "Bash(git -C \"D:/blog\" checkout -b main origin/main)",
+      "Bash(git -C \"D:/blog\" submodule add https://github.com/wxkj99/na-quiz.git na)",
+      "Bash(git -C \"D:/blog\" add .)",
+      "Bash(git -C \"D:/blog\" status)",
+      "Bash(git -C \"D:/blog\" commit -m \"restructure: add na submodule, move qr to subdirectory\")",
+      "Bash(git -C \"D:/blog\" push origin main)",
+      "Bash(git -C \"D:/programming/QR-viewer-simple\" remote remove origin)",
+      "Bash(git -C \"D:/programming/QR-viewer-simple\" remote add origin https://github.com/wxkj99/QR-view-simple.git)",
+      "Bash(git -C \"D:/programming/QR-viewer-simple\" branch -M main)",
+      "Bash(git -C \"D:/programming/QR-viewer-simple\" push -u origin main)",
+      "Bash(git -C \"D:/blog\" add deploy_na.bat deploy_qr.bat)",
+      "Bash(git -C \"D:/blog\" commit -m \"add deploy scripts\")",
+      "Bash(git -C \"D:/blog\" push)",
+      "Bash(git -C \"D:/math/NA\" add .)",
+      "Bash(git -C \"D:/math/NA\" commit -m \"add viewport meta to all pages\")",
+      "Bash(git -C \"D:/math/NA\" push)"
+    ]
+  }
+}
