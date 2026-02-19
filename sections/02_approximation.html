@@ -32,7 +32,7 @@
   <button class="answer-btn">显示答案</button>
   <div class="answer">
     三项递推：\(p_{n+1}(x) = (a_n x + b_n)p_n(x) - c_n p_{n-1}(x)\)，系数由正交条件唯一确定。<br><br>
-    零点性质：设 \(p_n\) 在 \((a,b)\) 内的奇数重零点为 \(x_1,\dots,x_k\)，令 \(q(x)=\prod(x-x_i)\)，则 \(\langle p_n, q\rangle = \int\rho\, p_n q\,dx\)。若 \(k<n\)，则 \(\deg q < n\)，由正交性 \(\langle p_n,q\rangle=0\)，但 \(p_n q\) 在 \((a,b)\) 上不变号，矛盾。故 \(k=n\)，即 \(p_n\) 恰有 \(n\) 个单实零点在 \((a,b)\) 内。
+    零点性质：设 \(p_n\) 在 \((a,b)\) 内的奇数重零点为 \(x_1,\dots,x_k\)，令 \(q(x)=\prod(x-x_i)\)，则 \(\langle p_n, q\rangle = \int\rho\, p_n q\,dx\)。若 \(k&lt;n\)，则 \(\deg q &lt; n\)，由正交性 \(\langle p_n,q\rangle=0\)，但 \(p_n q\) 在 \((a,b)\) 上不变号，矛盾。故 \(k=n\)，即 \(p_n\) 恰有 \(n\) 个单实零点在 \((a,b)\) 内。
   </div>
 </div>
 
@@ -44,9 +44,9 @@
   <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
   <button class="answer-btn">显示答案</button>
   <div class="answer">
-    设 \(m < n\)，需证 \(\int_{-1}^1 P_m P_n\,dx=0\)。<br><br>
+    设 \(m &lt; n\)，需证 \(\int_{-1}^1 P_m P_n\,dx=0\)。<br><br>
     令 \(Q_n = (x^2-1)^n\)，则 \(P_n = \frac{1}{2^n n!}Q_n^{(n)}\)。对 \(\int_{-1}^1 P_m Q_n^{(n)}\,dx\) 分部积分 \(n\) 次：每次边界项为零（因 \(Q_n\) 在 \(\pm1\) 处有 \(n\) 重零点），得 \((-1)^n\int_{-1}^1 P_m^{(n)} Q_n\,dx\)。<br><br>
-    因 \(\deg P_m = m < n\)，故 \(P_m^{(n)}\equiv0\)，积分为零。
+    因 \(\deg P_m = m &lt; n\)，故 \(P_m^{(n)}\equiv0\)，积分为零。
   </div>
 </div>
 
