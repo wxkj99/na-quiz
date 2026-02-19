@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>非线性方程 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 5 章：非线性方程求根</h1>
+
+<h2>5.1 不动点迭代</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">不动点定理：设 \(\phi:[a,b]\to[a,b]\) 连续，且 \(|\phi'(x)|\le L < 1\)，则 \(\phi\) 有唯一不动点 \(\alpha\)，且对任意 \(x_0\in[a,b]\)，迭代 \(x_{k+1}=\phi(x_k)\) 收敛到 \(\alpha\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>存在性：</b>令 \(g(x)=\phi(x)-x\)，\(g(a)=\phi(a)-a\ge0\)，\(g(b)=\phi(b)-b\le0\)，由介值定理存在不动点。<br><br>
+    <b>唯一性：</b>若 \(\alpha,\beta\) 均为不动点，\(|\alpha-\beta|=|\phi(\alpha)-\phi(\beta)|\le L|\alpha-\beta|\)，故 \(\alpha=\beta\)。<br><br>
+    <b>收敛性：</b>\(|x_{k+1}-\alpha|=|\phi(x_k)-\phi(\alpha)|\le L|x_k-\alpha|\le L^{k+1}|x_0-\alpha|\to0\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(g\in C^2\) 且 \(g(x^*)=x^*\)，\(g'(x^*)=0\)。证明不动点迭代 \(x_{k+1}=g(x_k)\) 在 \(x^*\) 附近至少二阶收敛。</span>
+  </div>
+  <textarea class="write-area" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(e_k=x_k-x^*\)，Taylor 展开：\(x_{k+1}=g(x^*)+g'(x^*)e_k+\frac{1}{2}g''(\xi_k)e_k^2\)。<br>
+    因 \(g(x^*)=x^*\)，\(g'(x^*)=0\)，故 \(e_{k+1}=\frac{1}{2}g''(\xi_k)e_k^2\)，即 \(|e_{k+1}|\le C|e_k|^2\)，二阶收敛。
+  </div>
+</div>
+
+<h2>5.2 Newton 法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(\alpha\) 是 \(f\) 的单根（\(f(\alpha)=0,f'(\alpha)\neq0\)），\(f\in C^2\)，证明 Newton 迭代在 \(\alpha\) 附近二次收敛。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    Newton 迭代：\(x_{k+1}=x_k - \dfrac{f(x_k)}{f'(x_k)}\)。<br><br>
+    将 \(f(\alpha)=0\) 在 \(x_k\) 处 Taylor 展开：\(0=f(\alpha)=f(x_k)+f'(x_k)(\alpha-x_k)+\frac{1}{2}f''(\xi_k)(\alpha-x_k)^2\)。<br><br>
+    故 \(\alpha - x_{k+1} = \alpha - x_k + \dfrac{f(x_k)}{f'(x_k)} = -\dfrac{f''(\xi_k)}{2f'(x_k)}(\alpha-x_k)^2\)。<br><br>
+    即 \(e_{k+1} = -\dfrac{f''(\xi_k)}{2f'(x_k)}e_k^2\)。当 \(x_k\to\alpha\) 时，\(\left|\dfrac{f''(\xi_k)}{2f'(x_k)}\right|\to\dfrac{|f''(\alpha)|}{2|f'(\alpha)|} < \infty\)，故二次收敛。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(\alpha\) 是 \(f\) 的 \(m\) 重根（\(m>1\)），Newton 法的收敛阶是多少？修正 Newton 法 \(x_{k+1}=x_k - m\dfrac{f(x_k)}{f'(x_k)}\) 的收敛阶是多少？请证明。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>普通 Newton 法（\(m\) 重根）：</b>写 \(f(x)=(x-\alpha)^m g(x)\)，\(g(\alpha)\neq0\)。<br>
+    \(\phi(x)=x-\dfrac{f}{f'}=x-\dfrac{(x-\alpha)g}{mg+(x-\alpha)g'}\)，计算 \(\phi'(\alpha)=1-\dfrac{1}{m}\neq0\)（\(m>1\)），故线性收敛，收敛因子 \(1-1/m\)。<br><br>
+    <b>修正 Newton 法：</b>\(\psi(x)=x-m\dfrac{f}{f'}\)，\(\psi'(\alpha)=1-m\cdot\dfrac{1}{m}=0\)，\(\psi''(\alpha)\) 有限，故二次收敛。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">若 \(f\) 有重根但重数未知，如何改造迭代使其恢复二次收敛？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(u(x)=\dfrac{f(x)}{f'(x)}\)，则 \(\alpha\) 是 \(u\) 的单根（无论 \(f\) 的重数如何）。<br><br>
+    对 \(u\) 应用 Newton 法：\(x_{k+1}=x_k-\dfrac{u(x_k)}{u'(x_k)}=x_k-\dfrac{f(x_k)f'(x_k)}{[f'(x_k)]^2-f(x_k)f''(x_k)}\)。<br><br>
+    由于 \(\alpha\) 是 \(u\) 的单根，此迭代在 \(\alpha\) 附近二次收敛，无需知道重数 \(m\)。
+  </div>
+</div>
+
+<h2>5.3 其他方法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">割线法的迭代格式是什么？收敛阶是多少？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[x_{k+1} = x_k - f(x_k)\frac{x_k - x_{k-1}}{f(x_k)-f(x_{k-1})}\]
+    收敛阶为黄金比例 \(p = \dfrac{1+\sqrt5}{2}\approx1.618\)（超线性收敛）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">Steffensen 加速方法的格式是什么？它将线性收敛的不动点迭代加速到什么阶？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    设 \(y=\phi(x),\,z=\phi(y)\)，Steffensen 迭代：
+    \[x_{k+1} = x_k - \frac{(y_k-x_k)^2}{z_k - 2y_k + x_k}\]
+    将线性收敛（\(\phi'(\alpha)\neq0\)）加速到二次收敛。本质是对 \(\phi\) 应用 Aitken \(\Delta^2\) 加速。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

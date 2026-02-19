@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>函数逼近 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 2 章：函数逼近</h1>
+
+<h2>2.1 正交多项式基础</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">带权内积的定义：在区间 \([a,b]\) 上，权函数 \(\rho(x)>0\)，内积为</span>
+  </div>
+  <div style="margin:0.5rem 0">\(\langle f,g\rangle =\) <input class="blank" style="min-width:240px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">\[\langle f,g\rangle = \int_a^b \rho(x)f(x)g(x)\,dx\]</div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">正交多项式系 \(\{p_n\}\) 的三项递推关系的一般形式是什么？为什么正交多项式的零点都是实的、单重的，且落在 \((a,b)\) 内？</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    三项递推：\(p_{n+1}(x) = (a_n x + b_n)p_n(x) - c_n p_{n-1}(x)\)，系数由正交条件唯一确定。<br><br>
+    零点性质：设 \(p_n\) 在 \((a,b)\) 内的奇数重零点为 \(x_1,\dots,x_k\)，令 \(q(x)=\prod(x-x_i)\)，则 \(\langle p_n, q\rangle = \int\rho\, p_n q\,dx\)。若 \(k<n\)，则 \(\deg q < n\)，由正交性 \(\langle p_n,q\rangle=0\)，但 \(p_n q\) 在 \((a,b)\) 上不变号，矛盾。故 \(k=n\)，即 \(p_n\) 恰有 \(n\) 个单实零点在 \((a,b)\) 内。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">Legendre 多项式 \(P_n\) 定义在 \([-1,1]\) 上（权函数 \(\rho\equiv1\)），满足 Rodrigues 公式 \(P_n(x)=\frac{1}{2^n n!}\frac{d^n}{dx^n}(x^2-1)^n\)。证明 \(\{P_n\}\) 两两正交。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    设 \(m < n\)，需证 \(\int_{-1}^1 P_m P_n\,dx=0\)。<br><br>
+    令 \(Q_n = (x^2-1)^n\)，则 \(P_n = \frac{1}{2^n n!}Q_n^{(n)}\)。对 \(\int_{-1}^1 P_m Q_n^{(n)}\,dx\) 分部积分 \(n\) 次：每次边界项为零（因 \(Q_n\) 在 \(\pm1\) 处有 \(n\) 重零点），得 \((-1)^n\int_{-1}^1 P_m^{(n)} Q_n\,dx\)。<br><br>
+    因 \(\deg P_m = m < n\)，故 \(P_m^{(n)}\equiv0\)，积分为零。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">Legendre 多项式的递推关系（前几项）：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(P_0=\)<input class="blank" style="min-width:50px">，\(P_1=\)<input class="blank" style="min-width:50px">，\(P_2=\)<input class="blank" style="min-width:120px">，\(P_3=\)<input class="blank" style="min-width:140px"><br><br>
+    递推：\((n+1)P_{n+1}(x)=\)<input class="blank" style="min-width:240px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(P_0=1,\;P_1=x,\;P_2=\frac{1}{2}(3x^2-1),\;P_3=\frac{1}{2}(5x^3-3x)\)<br>
+    \((n+1)P_{n+1}(x) = (2n+1)xP_n(x) - nP_{n-1}(x)\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(\{p_0,p_1,\dots\}\) 是 \([a,b]\) 上关于权 \(\rho\) 的正交多项式系（\(\deg p_k=k\)），\(f\in L^2_\rho[a,b]\)。证明最佳 \(L^2\) 逼近的误差满足 Bessel 不等式：\(\sum_{k=0}^n \frac{\langle f,p_k\rangle^2}{\langle p_k,p_k\rangle}\le\|f\|^2\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(a_k=\langle f,p_k\rangle/\langle p_k,p_k\rangle\)，\(S_n=\sum_{k=0}^n a_k p_k\)。展开：
+    \[0\le\|f-S_n\|^2 = \|f\|^2 - 2\langle f,S_n\rangle + \|S_n\|^2 = \|f\|^2 - \sum_{k=0}^n\frac{\langle f,p_k\rangle^2}{\langle p_k,p_k\rangle}\]
+    故 \(\sum_{k=0}^n\frac{\langle f,p_k\rangle^2}{\langle p_k,p_k\rangle}\le\|f\|^2\)。
+  </div>
+</div>
+
+<h2>2.2 Chebyshev 多项式</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">Chebyshev 多项式的三角定义与递推：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(T_n(x)=\)<input class="blank" style="min-width:180px">（\(|x|\le1\)），\(T_n(x)=\)<input class="blank" style="min-width:200px">（\(|x|>1\)）<br><br>
+    \(T_0=\)<input class="blank" style="min-width:40px">，\(T_1=\)<input class="blank" style="min-width:40px">，\(T_{n+1}=\)<input class="blank" style="min-width:200px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(T_n(x)=\cos(n\arccos x)\)；\(T_n(x)=\cosh(n\,\mathrm{arccosh}\,x)\)<br>
+    \(T_0=1,\;T_1=x,\;T_{n+1}=2xT_n-T_{n-1}\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">\(T_n\) 的零点、极值点、首项系数，以及正交性（权函数是什么？）：</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    零点：\(x_k=\cos\frac{(2k-1)\pi}{2n}\)，\(k=1,\dots,n\)<br>
+    极值点：\(\tilde x_k=\cos\frac{k\pi}{n}\)，\(k=0,\dots,n\)，\(T_n(\tilde x_k)=(-1)^k\)<br>
+    首项系数：\(2^{n-1}\)（\(n\ge1\)）<br>
+    正交性：\(\int_{-1}^1\frac{T_m T_n}{\sqrt{1-x^2}}\,dx=\begin{cases}0&m\neq n\\\pi/2&m=n\neq0\\\pi&m=n=0\end{cases}\)（权函数 \(\rho=(1-x^2)^{-1/2}\)）
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">最优性：在所有首一 \(n\) 次多项式中，\(2^{1-n}T_n\) 的 \(\|\cdot\|_\infty\) 范数最小，值为 \(2^{1-n}\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(\|\tilde T_n\|_\infty=2^{1-n}\)（\(T_n\) 在 \(n+1\) 个极值点交替取 \(\pm1\)）。反设存在首一 \(p\) 使 \(\|p\|_\infty<2^{1-n}\)，令 \(q=\tilde T_n-p\)，\(\deg q\le n-1\)。在 \(n+1\) 个极值点处 \(q\) 交替变号，故有 \(n\) 个零点，矛盾。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">以 \(T_{n+1}\) 的零点为节点的 Lagrange 插值误差：\(\|f-L_n\|_\infty\le\frac{\|f^{(n+1)}\|_\infty}{(n+1)!\,2^n}\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    余项 \(|f-L_n|=\frac{|f^{(n+1)}(\xi)|}{(n+1)!}|\omega_{n+1}|\)。节点为 \(T_{n+1}\) 零点时 \(\omega_{n+1}=2^{-n}T_{n+1}\)（首项系数 \(2^n\)），故 \(|\omega_{n+1}|\le 2^{-n}\)，代入即得。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">证明 \(T_n(2x-1)=T_{2n}(\sqrt{x})\)，其中 \(0&lt;x&lt;1\)。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(t=\sqrt{x}\in(0,1)\)，设 \(\theta=\arccos t\)，则 \(\cos\theta=t=\sqrt{x}\)。<br>
+    \(T_{2n}(\sqrt{x})=\cos(2n\theta)\)。<br>
+    另一方面，\(2x-1=2\cos^2\theta-1=\cos(2\theta)\)，故 \(T_n(2x-1)=\cos(n\cdot2\theta)=\cos(2n\theta)\)。两式相等。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">离散正交性：以 \(T_n\) 的 \(n\) 个零点 \(x_k=\cos\frac{(2k-1)\pi}{2n}\) 为节点，\(\{T_j\}_{0\le j<n}\) 关于离散内积 \((u,v)=\sum_{k=1}^n u(x_k)v(x_k)\) 满足：</span>
+  </div>
+  <div style="margin:0.5rem 0">\((T_i,T_j)=\)<input class="blank" style="min-width:240px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[(T_i,T_j)=\begin{cases}0&i\neq j\\n/2&i=j\neq0\\n&i=j=0\end{cases}\]
+  </div>
+</div>
+
+<h2>2.3 最小二乘逼近</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">写出连续最小二乘逼近的正规方程，并说明当基函数正交时方程如何简化。</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    正规方程：\(G\mathbf{a}=\mathbf{b}\)，\(G_{ij}=\langle\varphi_i,\varphi_j\rangle\)，\(b_i=\langle f,\varphi_i\rangle\)。<br>
+    正交时 \(G\) 为对角阵，\(a_j=\langle f,\varphi_j\rangle/\|\varphi_j\|^2\)，无需解方程组。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">最小二乘逼近的最优性：\(p^*=\sum a_j\varphi_j\) 是 \(f\) 在子空间 \(V_n=\mathrm{span}\{\varphi_j\}\) 中的最佳 \(L^2\) 逼近，当且仅当残差 \(f-p^*\perp V_n\)。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    对任意 \(q\in V_n\)：\(\|f-q\|^2=\|f-p^*+(p^*-q)\|^2=\|f-p^*\|^2+2\langle f-p^*,p^*-q\rangle+\|p^*-q\|^2\)。<br>
+    若 \(f-p^*\perp V_n\)，则中间项为零，\(\|f-q\|^2\ge\|f-p^*\|^2\)，故 \(p^*\) 最优。<br>
+    反之若 \(p^*\) 最优，对任意 \(v\in V_n\) 令 \(q=p^*+tv\)，\(\frac{d}{dt}\|f-q\|^2|_{t=0}=-2\langle f-p^*,v\rangle=0\)，故 \(f-p^*\perp V_n\)。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

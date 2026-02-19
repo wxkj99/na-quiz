@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>矩阵特征值 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 6 章：矩阵特征值</h1>
+
+<h2>6.1 幂法与反幂法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">描述幂法的算法步骤，它收敛到哪个特征值？收敛速度由什么决定？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>算法：</b>取初始向量 \(q_0\)，迭代：\(z_{k+1}=Aq_k\)，\(q_{k+1}=z_{k+1}/\|z_{k+1}\|\)，Rayleigh 商 \(\lambda^{(k)}=q_k^TAq_k\)。<br><br>
+    收敛到模最大特征值 \(\lambda_1\)（要求 \(|\lambda_1|>|\lambda_2|\)）。<br><br>
+    收敛速度：\(|\lambda_2/\lambda_1|^k\)，即比值越小收敛越快。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">反幂法如何求最小特征值？带位移的反幂法如何求离 \(\mu\) 最近的特征值？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    反幂法：对 \(A^{-1}\) 用幂法，即每步解 \(Az_{k+1}=q_k\)，收敛到模最小特征值。<br><br>
+    带位移：对 \((A-\mu I)^{-1}\) 用幂法，每步解 \((A-\mu I)z_{k+1}=q_k\)，收敛到离 \(\mu\) 最近的特征值。收敛速度由 \(\dfrac{|\lambda_j-\mu|_{\min}}{|\lambda_i-\mu|_{\text{second}}}\) 决定。
+  </div>
+</div>
+
+<h2>6.2 QR 算法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">基本 QR 迭代的步骤是什么？为什么实用中要先化为上 Hessenberg 形？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>基本 QR 迭代：</b>\(A_0=A\)，每步做 QR 分解 \(A_k=Q_kR_k\)，令 \(A_{k+1}=R_kQ_k\)。\(A_k\) 相似于 \(A\)，收敛到拟上三角形（Schur 形）。<br><br>
+    <b>先化 Hessenberg：</b>用 Householder 变换将 \(A\) 化为上 Hessenberg 形（次对角线以下为零），\(O(n^3)\) 一次完成。Hessenberg 矩阵的 QR 分解只需 \(O(n^2)\)，使每步迭代从 \(O(n^3)\) 降到 \(O(n^2)\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">描述用 Householder 变换将一般矩阵正交相似化为上 Hessenberg 形的步骤。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    共需 \(n-2\) 步。第 \(k\) 步（\(k=1,\dots,n-2\)）：<br><br>
+    构造 Householder 反射 \(H_k\)，作用于第 \(k\) 列的第 \(k+2,\dots,n\) 行分量（即 \(A(k+2:n,\,k)\)），将这些元素清零。\(H_k\) 嵌入为 \(n\times n\) 块对角矩阵（左上角为 \(k\times k\) 单位块）。<br><br>
+    更新：\(A \leftarrow H_k A H_k^T\)。<br>
+    左乘 \(H_k\)：消去目标列的次对角线以下元素。<br>
+    右乘 \(H_k^T\)：保持相似性（\(H_kAH_k^T\) 与 \(A\) 相似），且不破坏已清零的位置（因 \(H_k\) 只作用于第 \(k+1\) 行及以下，右乘不影响前 \(k\) 列）。<br><br>
+    最终：\(H = H_{n-2}\cdots H_1\,A\,H_1\cdots H_{n-2}\)，满足 \(H_{ij}=0\) 对所有 \(i > j+1\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">陈述隐式 Q 定理（Implicit Q Theorem）。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    设 \(Q^TAQ=H\) 和 \(Z^TAZ=G\) 均为不可约上 Hessenberg 形，其中 \(Q,Z\) 正交，且 \(Q\) 与 \(Z\) 的第一列相同（\(q_1=z_1\)）。则 \(Q=ZD\)，\(H=D^TGD\)，其中 \(D=\mathrm{diag}(\pm1,\dots,\pm1)\)。<br><br>
+    含义：将矩阵正交相似化为不可约上 Hessenberg 形的正交变换，由其第一列唯一确定（差符号）。这是隐式 QR 步合法性的理论基础：只需确定变换的第一列，结果即唯一。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">隐式 QR 步（带位移）的基本思想是什么？实用 QR 算法中如何处理复特征值？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>隐式 QR 步：</b>带位移 \(\mu\) 的 QR 步等价于对 \(A-\mu I\) 做 QR 再合并，但隐式实现避免显式形成 \(A-\mu I\)：只需计算第一列，用 Householder 变换"追赶"，利用隐式 Q 定理保证结果唯一性。<br><br>
+    <b>双重步位移（Francis 步）：</b>对实矩阵，用共轭对位移 \(\mu,\bar\mu\) 做两步隐式 QR，保持实运算，可处理复特征值对，结果为实 Schur 形（\(2\times2\) 块对应复特征值对）。
+  </div>
+</div>
+
+<h2>6.3 对称矩阵特征值：Jacobi 方法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">Jacobi 方法的基本思想：每步用什么变换？目标是什么？旋转角如何选取？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    每步用 Givens 旋转矩阵 \(G(p,q,\theta)\)（仅在 \((p,q)\) 平面旋转），做相似变换 \(A\leftarrow G^TAG\)，目标是消去 \(a_{pq}\)（令变换后的 \((p,q)\) 元素为零）。<br><br>
+    旋转角：由 \(\tan2\theta = \dfrac{2a_{pq}}{a_{pp}-a_{qq}}\) 确定（若 \(a_{pp}=a_{qq}\) 则 \(\theta=\pi/4\)）。<br><br>
+    经典 Jacobi：每步选模最大的非对角元；循环 Jacobi：按固定顺序扫描。收敛性：非对角元的 Frobenius 范数单调递减，最终趋于零。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">Jacobi 一步变换后，非对角元平方和严格减小（即方法收敛）。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    设 \(\text{off}(A)^2 = \sum_{i\neq j}a_{ij}^2\)。Givens 旋转 \(G\) 作用后，\(A'=G^TAG\) 与 \(A\) 相似，故 \(\|A'\|_F=\|A\|_F\)，即 \(\sum_i(a'_{ii})^2 + \text{off}(A')^2 = \sum_i a_{ii}^2 + \text{off}(A)^2\)。<br><br>
+    旋转选取使 \(a'_{pq}=a'_{qp}=0\)，而 \((a'_{pp})^2+(a'_{qq})^2 = a_{pp}^2+a_{qq}^2+2a_{pq}^2\)（可验证）。<br><br>
+    故 \(\text{off}(A')^2 = \text{off}(A)^2 - 2a_{pq}^2 < \text{off}(A)^2\)（只要 \(a_{pq}\neq0\)）。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

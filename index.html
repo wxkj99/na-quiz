@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>数值分析默写卷</title>
+<link rel="stylesheet" href="sections/style.css">
+<style>
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.chapter-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; text-decoration: none; color: var(--text); transition: border-color 0.15s; }
+.chapter-card:hover { border-color: var(--accent); }
+.chapter-card .num { font-size: 0.75rem; color: var(--muted); }
+.chapter-card .title { font-size: 1rem; color: var(--accent); margin-top: 0.2rem; }
+.chapter-card .desc { font-size: 0.82rem; color: var(--muted); margin-top: 0.3rem; }
+.tag { display: inline-block; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 3px; margin-top: 0.4rem; }
+.tag-high { background: #3d2020; color: var(--red); }
+.tag-med { background: #2d2d10; color: var(--yellow); }
+</style>
+</head>
+<body>
+<h1>数值分析默写卷</h1>
+<p style="color:var(--muted);margin-top:0.3rem">应用数学资格考试复习 · 点击章节开始默写</p>
+
+<div class="chapter-grid">
+  <a class="chapter-card" href="sections/01_interpolation.html">
+    <div class="num">第 1 章</div>
+    <div class="title">插值法</div>
+    <div class="desc">Lagrange、Newton、Hermite、样条</div>
+    <span class="tag tag-high">高频</span>
+  </a>
+  <a class="chapter-card" href="sections/02_approximation.html">
+    <div class="num">第 2 章</div>
+    <div class="title">函数逼近</div>
+    <div class="desc">最小二乘、Chebyshev 多项式</div>
+    <span class="tag tag-high">高频</span>
+  </a>
+  <a class="chapter-card" href="sections/03_integration.html">
+    <div class="num">第 3 章</div>
+    <div class="title">数值积分</div>
+    <div class="desc">Newton-Cotes、复合求积、Gauss 求积</div>
+    <span class="tag tag-med">中频</span>
+  </a>
+  <a class="chapter-card" href="sections/04_linear_systems.html">
+    <div class="num">第 4 章</div>
+    <div class="title">线性方程组数值解</div>
+    <div class="desc">直接法、迭代法、CG、GMRES</div>
+    <span class="tag tag-high">高频</span>
+  </a>
+  <a class="chapter-card" href="sections/05_nonlinear.html">
+    <div class="num">第 5 章</div>
+    <div class="title">非线性方程求根</div>
+    <div class="desc">不动点迭代、Newton 法、收敛阶</div>
+    <span class="tag tag-high">高频</span>
+  </a>
+  <a class="chapter-card" href="sections/06_eigenvalue.html">
+    <div class="num">第 6 章</div>
+    <div class="title">矩阵特征值</div>
+    <div class="desc">幂法、QR 算法、Jacobi 方法</div>
+    <span class="tag tag-med">中频</span>
+  </a>
+  <a class="chapter-card" href="sections/07_ode.html">
+    <div class="num">第 7 章</div>
+    <div class="title">常微分方程数值解</div>
+    <div class="desc">Euler、RK4、稳定性（简略）</div>
+    <span class="tag tag-med">低频</span>
+  </a>
+  <a class="chapter-card" href="sections/08_pde.html">
+    <div class="num">第 8 章</div>
+    <div class="title">偏微分方程数值解</div>
+    <div class="desc">截断误差、冯·诺依曼、能量法、最大值原理</div>
+    <span class="tag tag-high">高频·必考</span>
+  </a>
+  <a class="chapter-card" href="sections/09_fft_svd.html">
+    <div class="num">第 9 章</div>
+    <div class="title">数学杂项</div>
+    <div class="desc">傅里叶分析、SVD、Moore-Penrose 逆</div>
+    <span class="tag tag-med">中频</span>
+  </a>
+  <a class="chapter-card" href="sections/10_convex.html">
+    <div class="num">第 10 章</div>
+    <div class="title">凸优化基础</div>
+    <div class="desc">凸集/凸函数、对偶、KKT、次梯度</div>
+    <span class="tag tag-high">高频·必考</span>
+  </a>
+</div>
+
+<script src="sections/quiz.js"></script>
+</body>
+</html>

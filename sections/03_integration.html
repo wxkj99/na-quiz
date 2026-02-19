@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>数值积分 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 3 章：数值积分</h1>
+
+<h2>3.1 Newton-Cotes 公式</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">梯形公式、Simpson 公式及其误差阶：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    梯形：\(\int_a^b f\,dx \approx\) <input class="blank" style="min-width:200px">，误差 \(O(\)<input class="blank" style="min-width:60px">\()\)<br><br>
+    Simpson：\(\int_a^b f\,dx \approx\) <input class="blank" style="min-width:280px">，误差 \(O(\)<input class="blank" style="min-width:60px">\()\)
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    梯形：\(\dfrac{b-a}{2}[f(a)+f(b)]\)，误差 \(O(h^3)\)（单区间），即 \(-\frac{h^3}{12}f''(\xi)\)<br><br>
+    Simpson：\(\dfrac{b-a}{6}\left[f(a)+4f\!\left(\tfrac{a+b}{2}\right)+f(b)\right]\)，误差 \(O(h^5)\)，即 \(-\frac{(b-a)^5}{2880}f^{(4)}(\xi)\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">复合梯形公式（\(n\) 等分，步长 \(h=(b-a)/n\)）及整体误差：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(T_h =\) <input class="blank" style="min-width:320px"><br><br>
+    误差：\(I - T_h =\) <input class="blank" style="min-width:200px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[T_h = h\left[\frac{f(a)+f(b)}{2} + \sum_{k=1}^{n-1}f(x_k)\right]\]
+    \[I - T_h = -\frac{(b-a)h^2}{12}f''(\xi) = O(h^2)\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">求积公式的代数精度定义，以及梯形、Simpson 公式各自的代数精度：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    代数精度 \(m\) 的定义：<input class="blank" style="min-width:320px"><br><br>
+    梯形代数精度：<input class="blank" style="min-width:40px">；Simpson 代数精度：<input class="blank" style="min-width:40px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    代数精度 \(m\)：对所有次数 \(\le m\) 的多项式精确，对某次数 \(m+1\) 的多项式不精确。<br>
+    梯形：代数精度 1；Simpson：代数精度 3。
+  </div>
+</div>
+
+<h2>3.2 Gauss 型求积</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">说明 \(n+1\) 点 Gauss 求积公式的构造原理：节点如何选取？能达到的最高代数精度是多少？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(n+1\) 个节点 \(x_0,\dots,x_n\) 和权重 \(w_0,\dots,w_n\) 共 \(2n+2\) 个自由度，最高可达代数精度 \(2n+1\)。<br><br>
+    关键：节点取权函数 \(\rho(x)\) 对应的 \(n+1\) 次正交多项式的零点（如标准 Gauss-Legendre 取 Legendre 多项式零点）。权重由插值型公式确定：\(w_k = \int_a^b \rho(x)\ell_k(x)\,dx\)。<br><br>
+    误差：\(I(f)-I_{n+1}(f) = \frac{f^{(2n+2)}(\xi)}{(2n+2)!}\int_a^b\rho(x)\omega_{n+1}^2(x)\,dx\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">证明：\(n+1\) 点插值型求积公式代数精度 \(\ge 2n+1\) 当且仅当节点是某 \(n+1\) 次正交多项式的零点。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>充分性：</b>设节点为正交多项式 \(p_{n+1}\) 的零点。对任意次数 \(\le 2n+1\) 的多项式 \(f\)，作带余除法 \(f = q\cdot p_{n+1} + r\)，其中 \(\deg r \le n\)。<br>
+    插值型公式对 \(r\) 精确（\(\deg r\le n\le 2n+1\) 且插值型公式对 \(\le n\) 次精确）。<br>
+    对 \(q\cdot p_{n+1}\)：\(\int \rho\, q\, p_{n+1}\,dx = 0\)（正交性，\(\deg q\le n\)）；求积公式值 \(\sum w_k q(x_k)p_{n+1}(x_k)=0\)（节点是零点）。故两边相等。<br><br>
+    <b>必要性：</b>若代数精度 \(\ge 2n+1\)，取 \(f(x)=\omega_{n+1}(x)\cdot p(x)\)（\(\deg p\le n\)），公式精确，而 \(\sum w_k f(x_k)=0\)，故 \(\int\rho\,\omega_{n+1}\,p\,dx=0\) 对所有 \(\deg p\le n\) 成立，即 \(\omega_{n+1}\) 与所有低次多项式正交。
+  </div>
+</div>
+
+<h2>3.3 周期函数的复合梯形公式</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(f\) 是以 \(2\pi\) 为周期的函数，\(f\in C^m\)，复合梯形公式 \(ITr_h(f)=h\sum_{k=1}^n f(kh)\)（\(h=2\pi/n\)）满足 \(|I(f)-ITr_h(f)|\le Ch^m\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明（提示：用 Euler-Maclaurin 公式或 Fourier 分析）..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>Fourier 分析方法：</b>设 \(f\) 的 Fourier 系数为 \(\hat f_k = \frac{1}{2\pi}\int_0^{2\pi}f(x)e^{-ikx}dx\)，则 \(I(f)=2\pi\hat f_0\)。<br><br>
+    离散求和的 Poisson 求和公式给出：\(ITr_h(f) = 2\pi\sum_{j=-\infty}^\infty \hat f_{jn}\)。<br><br>
+    故误差 \(I(f)-ITr_h(f) = -2\pi\sum_{j\neq 0}\hat f_{jn}\)。<br><br>
+    由 \(f\in C^m\)，\(|\hat f_k|\le C|k|^{-m}\)，故 \(|I-ITr_h|\le C\sum_{j\neq0}|jn|^{-m} = Cn^{-m}\cdot 2\zeta(m) = O(h^m)\)。
+  </div>
+</div>
+
+
+<h2>3.4 误差证明</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">推导梯形公式的误差：\(\int_a^b f\,dx - \frac{b-a}{2}[f(a)+f(b)] = -\frac{(b-a)^3}{12}f''(\xi)\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(h=b-a\)，\(m=(a+b)/2\)。将 \(f\) 在 \(m\) 处 Taylor 展开：\(f(x)=f(m)+f'(m)(x-m)+\frac{1}{2}f''(m)(x-m)^2+\cdots\)<br><br>
+    精确积分：\(\int_a^b f\,dx = hf(m)+\frac{h^3}{24}f''(m)+O(h^5)\)（奇次项积分为零）。<br><br>
+    梯形值：\(\frac{h}{2}[f(a)+f(b)]=\frac{h}{2}[2f(m)+f''(m)\frac{h^2}{4}\cdot2+O(h^4)]=hf(m)+\frac{h^3}{4}f''(m)\cdot\frac{1}{2}+O(h^5)\)。<br><br>
+    误差 \(=\frac{h^3}{24}f''(m)-\frac{h^3}{8}f''(m)+O(h^5)=-\frac{h^3}{12}f''(\xi)\)（用中值定理将 \(f''(m)\) 换为 \(f''(\xi)\)）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">推导 Simpson 公式的误差：\(\int_a^b f\,dx - \frac{b-a}{6}[f(a)+4f(\frac{a+b}{2})+f(b)] = -\frac{(b-a)^5}{2880}f^{(4)}(\xi)\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明（提示：在中点展开到5阶）..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(h=(b-a)/2\)，\(m=(a+b)/2\)，在 \(m\) 处展开 \(f\)：<br>
+    \(\int_a^b f\,dx = 2hf(m)+\frac{2h^3}{6}f''(m)+\frac{2h^5}{120}f^{(4)}(m)+O(h^7)\)<br><br>
+    Simpson 值：\(\frac{h}{3}[f(m-h)+4f(m)+f(m+h)]\)。展开 \(f(m\pm h)\)：<br>
+    \(f(m\pm h)=f(m)\pm hf'+\frac{h^2}{2}f''+\pm\frac{h^3}{6}f'''+\frac{h^4}{24}f^{(4)}+O(h^5)\)<br>
+    \(f(m-h)+4f(m)+f(m+h)=6f(m)+h^2f''+\frac{h^4}{12}f^{(4)}+O(h^6)\)<br>
+    Simpson \(=\frac{h}{3}[6f(m)+h^2f''+\frac{h^4}{12}f^{(4)}]=2hf(m)+\frac{h^3}{3}f''+\frac{h^5}{36}f^{(4)}\)<br><br>
+    误差 \(=\frac{2h^5}{120}f^{(4)}-\frac{h^5}{36}f^{(4)}=h^5(\frac{1}{60}-\frac{1}{36})f^{(4)}=-\frac{h^5}{90}f^{(4)}(\xi)=-\frac{(b-a)^5}{2880}f^{(4)}(\xi)\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">复合梯形公式的整体误差为 \(O(h^2)\)：\(I-T_h=-\frac{(b-a)h^2}{12}f''(\xi)\)。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    每个子区间 \([x_k,x_{k+1}]\) 上梯形误差为 \(-\frac{h^3}{12}f''(\xi_k)\)，求和：<br>
+    \(I-T_h = \sum_{k=0}^{n-1}\left(-\frac{h^3}{12}f''(\xi_k)\right) = -\frac{h^3}{12}\sum_{k=0}^{n-1}f''(\xi_k)\)<br>
+    由介值定理，\(\frac{1}{n}\sum f''(\xi_k)=f''(\xi)\) 对某 \(\xi\in(a,b)\)，而 \(nh=b-a\)，故<br>
+    \(I-T_h = -\frac{h^3}{12}\cdot n\cdot f''(\xi) = -\frac{(b-a)h^2}{12}f''(\xi)\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">Gauss 求积公式的误差：\(n+1\) 点 Gauss 公式（节点为正交多项式 \(p_{n+1}\) 的零点）的误差为
+    \[I(f)-I_{n+1}(f)=\frac{f^{(2n+2)}(\xi)}{(2n+2)!}\int_a^b\rho(x)[p_{n+1}(x)]^2\,dx\]</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    对 \(f\) 作 Hermite 插值（在 \(n+1\) 个节点处各插值函数值和一阶导数值），得 \(H_{2n+1}\)，余项：<br>
+    \(f(x)-H_{2n+1}(x)=\frac{f^{(2n+2)}(\xi_x)}{(2n+2)!}[p_{n+1}(x)]^2\)<br><br>
+    对两边乘 \(\rho\) 积分：<br>
+    \(I(f)-\int\rho H_{2n+1}\,dx = \frac{f^{(2n+2)}(\xi)}{(2n+2)!}\int\rho p_{n+1}^2\,dx\)（用积分中值定理）<br><br>
+    由于 Gauss 公式对 \(\le 2n+1\) 次多项式精确，而 \(H_{2n+1}\) 是 \(2n+1\) 次多项式，故 \(\int\rho H_{2n+1}\,dx = I_{n+1}(H_{2n+1}) = I_{n+1}(f)\)（节点处 \(H_{2n+1}=f\)），代入即得。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">区间 \([-1,1]\) 上的 2 点 Gauss-Legendre 公式：节点和权重为</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    节点：\(x_{1,2}=\) <input class="blank" style="min-width:160px">，权重：\(w_1=w_2=\) <input class="blank" style="min-width:80px"><br><br>
+    公式：\(\displaystyle\int_{-1}^1 f\,dx\approx\) <input class="blank" style="min-width:280px">，代数精度为 <input class="blank" style="min-width:40px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    节点：\(x_{1,2}=\pm\dfrac{1}{\sqrt{3}}\)，权重：\(w_1=w_2=1\)<br><br>
+    公式：\(\displaystyle\int_{-1}^1 f\,dx\approx f\!\left(-\tfrac{1}{\sqrt{3}}\right)+f\!\left(\tfrac{1}{\sqrt{3}}\right)\)，代数精度 3<br><br>
+    验证：\(f=x^3\) 时两端均为 0 ✓；\(f=x^4\) 时精确值 \(2/5\)，公式值 \(2\cdot(1/3)^2=2/9\neq2/5\)，故精度恰好为 3。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

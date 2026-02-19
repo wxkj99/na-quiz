@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>插值法 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 1 章：插值法</h1>
+
+<h2>1.1 Lagrange 插值</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">给定 \(n+1\) 个节点 \(x_0,\dots,x_n\)，Lagrange 基函数 \(\ell_k(x)\)（满足 \(\ell_k(x_j)=\delta_{kj}\)）的定义为：</span>
+  </div>
+  <div style="margin:0.5rem 0">\(\ell_k(x) =\) <input class="blank" style="min-width:280px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[\ell_k(x) = \prod_{\substack{j=0\\j\neq k}}^{n} \frac{x - x_j}{x_k - x_j}\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">Lagrange 插值余项：设 \(f \in C^{n+1}[a,b]\)，则</span>
+  </div>
+  <div style="margin:0.5rem 0">\(f(x) - L_n(x) =\) <input class="blank" style="min-width:320px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[f(x) - L_n(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}\prod_{j=0}^n (x-x_j), \quad \xi \in (a,b)\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">证明 Lagrange 插值余项公式。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    构造辅助函数 \(\varphi(t) = f(t) - L_n(t) - K\cdot\omega_{n+1}(t)\)，其中 \(\omega_{n+1}(t)=\prod_{j=0}^n(t-x_j)\)，\(K\) 由 \(\varphi(x)=0\) 确定，即 \(K = \frac{f(x)-L_n(x)}{\omega_{n+1}(x)}\)。<br><br>
+    \(\varphi\) 在 \(x_0,\dots,x_n,x\) 共 \(n+2\) 个点处为零，由 Rolle 定理反复应用，\(\exists\,\xi\) 使 \(\varphi^{(n+1)}(\xi)=0\)。<br><br>
+    \(\varphi^{(n+1)}(\xi) = f^{(n+1)}(\xi) - 0 - K\cdot(n+1)! = 0\)，故 \(K = \frac{f^{(n+1)}(\xi)}{(n+1)!}\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">证明 \(\sum_{k=0}^n \ell_k(x) \equiv 1\)，并由此推导 \(\sum_{k=0}^n x_k^m \ell_k(x) = x^m\) 对所有 \(m \le n\) 成立。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    取 \(f\equiv1\)，其插值多项式为常数 1，由唯一性 \(\sum\ell_k\equiv1\)。<br>
+    类似地，取 \(f(x)=x^m\)（\(m\le n\)），其 Lagrange 插值多项式就是 \(x^m\) 本身（次数 \(\le n\)，在节点处精确），故 \(\sum_{k=0}^n x_k^m\ell_k(x)=x^m\)。
+  </div>
+</div>
+
+<h2>1.2 Newton 差商插值</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">一阶差商与 \(k\) 阶差商的递推定义：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(f[x_0,x_1] =\) <input class="blank" style="min-width:200px"><br><br>
+    \(f[x_0,\dots,x_k] =\) <input class="blank" style="min-width:280px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[f[x_0,x_1] = \frac{f(x_1)-f(x_0)}{x_1-x_0}\]
+    \[f[x_0,\dots,x_k] = \frac{f[x_1,\dots,x_k]-f[x_0,\dots,x_{k-1}]}{x_k - x_0}\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">Newton 差商插值多项式的展开式：</span>
+  </div>
+  <div style="margin:0.5rem 0">\(N_n(x) =\) <input class="blank" style="min-width:500px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[N_n(x) = f[x_0] + f[x_0,x_1](x-x_0) + \cdots + f[x_0,\dots,x_n]\prod_{j=0}^{n-1}(x-x_j)\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">差商与导数的关系：</span>
+  </div>
+  <div style="margin:0.5rem 0">\(f[x_0,\dots,x_n] =\) <input class="blank" style="min-width:200px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[f[x_0,\dots,x_n] = \frac{f^{(n)}(\xi)}{n!}\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(f(x) = \frac{1}{x-a}\)（\(a\notin\{x_0,\dots,x_n\}\)），计算 \(f[x_0,\dots,x_n]\) 的闭式表达式，并验证差商的对称性在此例中成立。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出推导..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    用归纳法或直接计算：\(f[x_0,\dots,x_n] = \frac{(-1)^n}{\prod_{k=0}^n(x_k-a)}\)。<br><br>
+    验证：\(n=1\)：\(f[x_0,x_1]=\frac{\frac{1}{x_1-a}-\frac{1}{x_0-a}}{x_1-x_0}=\frac{-(x_1-x_0)}{(x_1-a)(x_0-a)(x_1-x_0)}=\frac{-1}{(x_0-a)(x_1-a)}\)，与公式一致，且关于 \(x_0,x_1\) 对称。<br><br>
+    对称性：\(\frac{(-1)^n}{\prod(x_k-a)}\) 显然关于 \(x_0,\dots,x_n\) 的任意置换不变。
+  </div>
+</div>
+
+<h2>1.3 Hermite 插值</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">说明 Hermite 插值问题的设定与自由度计算。</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    在节点 \(x_i\) 处要求 \(H^{(j)}(x_i)=f^{(j)}(x_i)\)，\(j=0,\dots,m_i-1\)（\(m_i\) 为重数）。总条件数 \(N=\sum m_i\)，\(H\) 为次数 \(\le N-1\) 的多项式。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">Hermite 插值余项（每节点重数为 2，共 \(n+1\) 个节点）：</span>
+  </div>
+  <div style="margin:0.5rem 0">\(f(x) - H_{2n+1}(x) =\) <input class="blank" style="min-width:320px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[f(x) - H_{2n+1}(x) = \frac{f^{(2n+2)}(\xi)}{(2n+2)!}\prod_{j=0}^n(x-x_j)^2, \quad \xi \in (a,b)\]
+  </div>
+</div>
+
+<h2>1.4 三次样条插值</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">三次样条 \(S\) 的定义条件（三条）及所需边界条件数：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    ① <input class="blank" style="min-width:200px"><br><br>
+    ② <input class="blank" style="min-width:200px"><br><br>
+    ③ 需要 <input class="blank" style="min-width:40px"> 个边界条件，常见类型：<input class="blank" style="min-width:300px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    ① 每段 \([x_i,x_{i+1}]\) 上是三次多项式<br>
+    ② 在内节点处 \(S,S',S''\) 连续<br>
+    ③ 需要 2 个边界条件；常见：自然样条 \(S''(x_0)=S''(x_n)=0\)；夹持样条 \(S'(x_0)=f'(x_0),S'(x_n)=f'(x_n)\)；周期样条
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(S\) 是自然三次样条（\(S''(a)=S''(b)=0\)），\(g\in C^2[a,b]\) 满足 \(g(x_i)=S(x_i)\)。证明 \(\displaystyle\int_a^b(S'')^2\,dx\le\int_a^b(g'')^2\,dx\)。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(h=g-S\)，则 \(h(x_i)=0\)。展开：\(\int(g'')^2=\int(S'')^2+2\int S''h''+\int(h'')^2\)。<br><br>
+    对交叉项分部积分两次：\(\int_a^b S''h''=[S''h']_a^b-[S'''h]_a^b+\int_a^b S^{(4)}h\,dx\)。<br>
+    三项均为零：\(S''(a)=S''(b)=0\)（自然边界）；\(h(x_i)=0\) 且 \(S'''\) 分段常数故 \([S'''h]_a^b=0\)；\(S^{(4)}\equiv0\) 逐段成立。<br><br>
+    故 \(\int(g'')^2=\int(S'')^2+\int(h'')^2\ge\int(S'')^2\)。
+  </div>
+</div>
+
+<h2>1.5 综合练习</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(f\in C^{n+1}[a,b]\)，\(x_0,\dots,x_n\) 为 \([a,b]\) 中的节点。定义 \(g(t) = f[x_0,\dots,x_{n-1},t]\)，证明 \(g'(t) = f[x_0,\dots,x_{n-1},t,t]\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    由差商递推定义：\(f[x_0,\dots,x_{n-1},t,t+h] = \frac{f[x_0,\dots,x_{n-1},t+h]-f[x_0,\dots,x_{n-1},t]}{h} = \frac{g(t+h)-g(t)}{h}\)。<br><br>
+    令 \(h\to0\)，左边趋于 \(f[x_0,\dots,x_{n-1},t,t]\)（差商关于节点连续），右边趋于 \(g'(t)\)，故 \(g'(t)=f[x_0,\dots,x_{n-1},t,t]\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(p\) 是次数 \(\le 2n+1\) 的多项式，在节点 \(x_0,\dots,x_n\) 处满足 \(p(x_i)=f(x_i)\) 和 \(p'(x_i)=f'(x_i)\)。若另有多项式 \(q\) 也满足同样条件，证明 \(p\equiv q\)（Hermite 插值的唯一性）。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(r=p-q\)，则 \(\deg r\le 2n+1\)，且 \(r(x_i)=0\)，\(r'(x_i)=0\)，\(i=0,\dots,n\)。<br>
+    故每个 \(x_i\) 是 \(r\) 的至少二重零点，\(r\) 有至少 \(2(n+1)=2n+2\) 个零点（计重数）。<br>
+    但 \(\deg r\le 2n+1 < 2n+2\)，故 \(r\equiv0\)，即 \(p\equiv q\)。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>常微分方程 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 7 章：常微分方程数值解（简略）</h1>
+
+<h2>7.1 基本方法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">对 \(y'=f(t,y)\)，Euler 法、改进 Euler 法（Heun）、经典 RK4 的格式：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    Euler：\(y_{n+1}=\) <input class="blank" style="min-width:200px">，局部截断误差 \(O(\)<input class="blank" style="min-width:40px">\()\)<br><br>
+    改进 Euler：\(y_{n+1}=\) <input class="blank" style="min-width:320px"><br><br>
+    RK4：\(k_1=\) <input class="blank" style="min-width:160px">，\(k_2=\) <input class="blank" style="min-width:200px">，<br>
+    \(k_3=\) <input class="blank" style="min-width:200px">，\(k_4=\) <input class="blank" style="min-width:200px">，<br>
+    \(y_{n+1}=\) <input class="blank" style="min-width:280px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    Euler：\(y_{n+1}=y_n+hf(t_n,y_n)\)，误差 \(O(h^2)\)<br><br>
+    改进 Euler：\(y_{n+1}=y_n+\frac{h}{2}[f(t_n,y_n)+f(t_{n+1},y_n+hf(t_n,y_n))]\)<br><br>
+    RK4：\(k_1=hf(t_n,y_n)\)，\(k_2=hf(t_n+h/2,y_n+k_1/2)\)，<br>
+    \(k_3=hf(t_n+h/2,y_n+k_2/2)\)，\(k_4=hf(t_n+h,y_n+k_3)\)，<br>
+    \(y_{n+1}=y_n+\frac{1}{6}(k_1+2k_2+2k_3+k_4)\)，局部误差 \(O(h^5)\)
+  </div>
+</div>
+
+<h2>7.2 稳定性</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">对测试方程 \(y'=\lambda y\)（\(\text{Re}\,\lambda<0\)），写出显式/隐式 Euler 法的绝对稳定域：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    显式 Euler：<input class="blank" style="min-width:200px"><br><br>
+    隐式 Euler：<input class="blank" style="min-width:200px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    显式 Euler：\(|1+h\lambda|<1\)，即复平面上以 \(-1\) 为圆心、半径 1 的圆盘。<br>
+    隐式 Euler：\(\left|\frac{1}{1-h\lambda}\right|<1\)，即 \(\text{Re}(h\lambda)<0\) 的整个左半平面（A-稳定）。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>线性方程组 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 4 章：线性方程组数值解</h1>
+
+<h2>4.1 直接法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">LU 分解的存在条件是什么？Cholesky 分解适用于什么矩阵，形式是什么？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    LU 分解存在且唯一（单位下三角 \(L\)）当且仅当 \(A\) 的所有顺序主子式非零。<br><br>
+    Cholesky 分解：\(A\) 对称正定时，存在唯一下三角矩阵 \(L\)（对角元为正）使 \(A = LL^T\)。计算量约为 LU 的一半。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">矩阵条件数（2-范数）定义及对称正定矩阵的表达式：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(\kappa_2(A) =\) <input class="blank" style="min-width:180px">；对称正定时 \(\kappa_2(A) =\) <input class="blank" style="min-width:180px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(\kappa_2(A) = \|A\|_2\|A^{-1}\|_2 = \dfrac{\sigma_{\max}(A)}{\sigma_{\min}(A)}\)<br><br>
+    对称正定时：\(\kappa_2(A) = \dfrac{\lambda_{\max}(A)}{\lambda_{\min}(A)}\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">线性方程组 \(Ax=b\) 的扰动分析：若 \(A(x+\delta x)=b+\delta b\)，则</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(\dfrac{\|\delta x\|}{\|x\|} \le\) <input class="blank" style="min-width:200px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[\frac{\|\delta x\|}{\|x\|} \le \kappa(A)\frac{\|\delta b\|}{\|b\|}\]
+    类似地，若 \(A\) 有扰动 \(\delta A\)：\(\dfrac{\|\delta x\|}{\|x+\delta x\|} \le \kappa(A)\dfrac{\|\delta A\|}{\|A\|}\)
+  </div>
+</div>
+
+<h2>4.2 经典迭代法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">将 \(A = D - L - U\)（\(D\) 对角，\(L,U\) 严格下/上三角），写出 Jacobi 和 Gauss-Seidel 的迭代矩阵：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    Jacobi：\(B_J =\) <input class="blank" style="min-width:200px"><br><br>
+    Gauss-Seidel：\(B_{GS} =\) <input class="blank" style="min-width:220px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(B_J = D^{-1}(L+U)\)<br>
+    \(B_{GS} = (D-L)^{-1}U\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">迭代法 \(x^{(k+1)}=Bx^{(k)}+c\) 收敛（对任意初值）当且仅当谱半径 \(\rho(B) < 1\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    设精确解 \(x^*=Bx^*+c\)，误差 \(e^{(k)}=x^{(k)}-x^*\) 满足 \(e^{(k)}=B^k e^{(0)}\)。<br><br>
+    <b>充分性：</b>\(\rho(B)<1\) 时，\(\forall\varepsilon>0\) 存在范数使 \(\|B\|\le\rho(B)+\varepsilon<1\)，故 \(\|e^{(k)}\|\le\|B\|^k\|e^{(0)}\|\to0\)。<br><br>
+    <b>必要性：</b>若 \(\rho(B)\ge1\)，设 \(\lambda\) 为对应特征值，\(Bv=\lambda v\)，取 \(e^{(0)}=v\)，则 \(e^{(k)}=\lambda^k v\)，\(\|e^{(k)}\|\not\to0\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">SOR 方法的迭代格式（\(\omega\) 为松弛因子）：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(x_i^{(k+1)} =\) <input class="blank" style="min-width:480px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \dfrac{\omega}{a_{ii}}\!\left(b_i - \sum_{j&lt;i}a_{ij}x_j^{(k+1)} - \sum_{j&gt;i}a_{ij}x_j^{(k)}\right)\)<br><br>
+    迭代矩阵：\(B_\omega = (D-\omega L)^{-1}[(1-\omega)D+\omega U]\)；收敛必要条件：\(0&lt;\omega&lt;2\)。
+  </div>
+</div>
+
+<h2>4.3 Krylov 子空间方法</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">CG 方法（\(A\) 对称正定，\(r_k=b-Ax_k\)，\(p_k\) 为搜索方向）的递推公式：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(\alpha_k =\) <input class="blank" style="min-width:180px">，&ensp;
+    \(x_{k+1} =\) <input class="blank" style="min-width:180px"><br><br>
+    \(\beta_k =\) <input class="blank" style="min-width:180px">，&ensp;
+    \(p_{k+1} =\) <input class="blank" style="min-width:180px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(\alpha_k = \dfrac{r_k^Tr_k}{p_k^TAp_k}\)，&ensp;\(x_{k+1}=x_k+\alpha_k p_k\)，&ensp;\(r_{k+1}=r_k-\alpha_k Ap_k\)<br><br>
+    \(\beta_k = \dfrac{r_{k+1}^Tr_{k+1}}{r_k^Tr_k}\)，&ensp;\(p_{k+1}=r_{k+1}+\beta_k p_k\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">用归纳法证明 CG 方法的残差正交性 \(r_i^Tr_j=0\)（\(i\neq j\)）和搜索方向共轭性 \(p_i^TAp_j=0\)（\(i\neq j\)）。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    用归纳法，设到第 \(k\) 步时 \(r_i^Tr_j=0\)（\(i\neq j\le k\)）和 \(p_i^TAp_j=0\)（\(i\neq j\le k\)）均成立。<br><br>
+    <b>残差正交性：</b>由递推 \(r_{k+1}=r_k-\alpha_k Ap_k\)，对 \(j\le k\)：<br>
+    \(r_{k+1}^Tr_j = r_k^Tr_j - \alpha_k p_k^TAr_j\)。<br>
+    当 \(j&lt;k\) 时：\(r_k^Tr_j=0\)（归纳假设）；\(p_k^TAr_j\)：由 \(r_j=p_j-\beta_{j-1}p_{j-1}\) 及共轭性，\(p_k^TAp_j=0\)，\(p_k^TAp_{j-1}=0\)，故 \(p_k^TAr_j=0\)。<br>
+    当 \(j=k\) 时：\(r_k^Tr_k=\|r_k\|^2\)，\(\alpha_k=\frac{r_k^Tr_k}{p_k^TAp_k}\)，故 \(r_{k+1}^Tr_k=\|r_k\|^2-\frac{\|r_k\|^2}{p_k^TAp_k}\cdot p_k^TAp_k=0\)。<br><br>
+    <b>共轭性：</b>由递推 \(p_{k+1}=r_{k+1}+\beta_k p_k\)，对 \(j\le k\)：<br>
+    \(p_{k+1}^TAp_j = r_{k+1}^TAp_j + \beta_k p_k^TAp_j\)。<br>
+    当 \(j&lt;k\)：两项均为零（归纳假设 + 残差正交性推出 \(r_{k+1}^TAp_j=0\)）。<br>
+    当 \(j=k\)：\(\beta_k=\frac{r_{k+1}^Tr_{k+1}}{r_k^Tr_k}\)，\(r_{k+1}^TAp_k=\frac{1}{\alpha_k}r_{k+1}^T(r_k-r_{k+1})=-\frac{\|r_{k+1}\|^2}{\alpha_k}\)，\(\beta_k p_k^TAp_k=\frac{\|r_{k+1}\|^2}{\|r_k\|^2}\cdot\frac{\|r_k\|^2}{\alpha_k}=\frac{\|r_{k+1}\|^2}{\alpha_k}\)，两项相消为零。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">\(k\) 阶 Krylov 子空间的定义：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(\mathcal{K}_k(A, r_0) =\) <input class="blank" style="min-width:320px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[\mathcal{K}_k(A,r_0) = \mathrm{span}\{r_0, Ar_0, A^2r_0, \dots, A^{k-1}r_0\}\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">CG 方法的误差估计：设 \(A\) 对称正定，\(\kappa=\kappa_2(A)\)，则
+    \[\|x_k - x^*\|_A \le 2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^k\|x_0-x^*\|_A\]</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明（提示：用 Chebyshev 多项式的最优性）..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    CG 的第 \(k\) 步解满足：\(x_k = \arg\min_{x\in x_0+\mathcal{K}_k}\|x-x^*\|_A\)，等价地，\(\|e_k\|_A = \min_{p\in\mathcal{P}_k,\,p(0)=1}\|p(A)e_0\|_A\)。<br><br>
+    由 \(A\) 的特征值 \(\lambda_i\in[\lambda_{\min},\lambda_{\max}]\)：
+    \[\|e_k\|_A^2 = \sum_i p(\lambda_i)^2\langle e_0,v_i\rangle_A^2 \le \max_{\lambda\in[\lambda_{\min},\lambda_{\max}]}p(\lambda)^2\cdot\|e_0\|_A^2\]
+    取 \(p(\lambda) = T_k\!\left(\frac{\lambda_{\max}+\lambda_{\min}-2\lambda}{\lambda_{\max}-\lambda_{\min}}\right)/T_k\!\left(\frac{\lambda_{\max}+\lambda_{\min}}{\lambda_{\max}-\lambda_{\min}}\right)\)（平移缩放的 Chebyshev 多项式），利用 \(T_k\) 的最优性和 \(|T_k(x)|\ge1\) 对 \(|x|>1\) 的下界，得
+    \[\min_{p(0)=1}\max_{\lambda\in[\lambda_{\min},\lambda_{\max}]}|p(\lambda)| = \frac{1}{T_k\!\left(\frac{\kappa+1}{\kappa-1}\right)} \le 2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^k\]
+    最后一步用 \(T_k(x)\ge\frac{1}{2}((x+\sqrt{x^2-1})^k+(x-\sqrt{x^2-1})^k)\ge(x+\sqrt{x^2-1})^k/2\)（\(x>1\)）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">简述 GMRES 方法的基本思想，与 CG 的主要区别是什么？</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    GMRES（广义最小残差法）：在 \(x_0+\mathcal{K}_k(A,r_0)\) 中求使残差 \(\|b-Ax_k\|_2\) 最小的解。用 Arnoldi 过程构造 \(\mathcal{K}_k\) 的正交基，将问题化为最小二乘问题（用 Givens 旋转求解）。<br><br>
+    与 CG 的区别：① GMRES 适用于一般非对称矩阵；② CG 最小化 \(A\)-范数误差（需 \(A\) 对称正定）；③ GMRES 每步需存储所有 Krylov 向量（内存开销大），实用中用重启版本 GMRES(\(m\))。
+  </div>
+</div>
+
+
+<h2>4.4 综合练习</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(A\) 对称正定，证明 SOR 方法收敛当且仅当 \(0 < \omega < 2\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    SOR 迭代矩阵 \(B_\omega=(D-\omega L)^{-1}[(1-\omega)D+\omega U]\)。<br><br>
+    <b>必要性（\(\rho(B_\omega)<1\Rightarrow 0<\omega<2\)）：</b><br>
+    \(\det(B_\omega)=\prod_i\lambda_i\)，另一方面 \(\det(B_\omega)=\det((1-\omega)D+\omega U)/\det(D-\omega L)=(1-\omega)^n\)（上/下三角行列式只看对角元）。若 \(\rho(B_\omega)<1\)，则 \(|\det B_\omega|=|1-\omega|^n<1\)，故 \(|1-\omega|<1\)，即 \(0<\omega<2\)。<br><br>
+    <b>充分性（\(0<\omega<2\Rightarrow\rho(B_\omega)<1\)）：</b><br>
+    设 \(B_\omega v=\lambda v\)，\(v\neq0\)，即 \([(1-\omega)D+\omega U]v=\lambda(D-\omega L)v\)。<br>
+    两边左乘 \(v^*\)（共轭转置），令 \(\alpha=v^*Dv>0\)（\(D\) 正定），\(\beta=v^*Lv\)，则 \(v^*Uv=\bar\beta\)（因 \(A=D-L-U\) 对称，\(U=L^T\)）。<br>
+    得 \((1-\omega)\alpha+\omega\bar\beta=\lambda(\alpha-\omega\beta)\)，故<br>
+    \(|\lambda|=\left|\frac{(1-\omega)\alpha+\omega\bar\beta}{\alpha-\omega\beta}\right|\)。<br>
+    令 \(\beta=p+qi\)，则分子模平方 \(=[(1-\omega)\alpha+\omega p]^2+\omega^2q^2\)，分母模平方 \(=(\alpha-\omega p)^2+\omega^2q^2\)。<br>
+    \(|\lambda|^2<1\) 等价于 \([(1-\omega)\alpha+\omega p]^2<(\alpha-\omega p)^2\)，展开化简得 \(\omega(2-\omega)\alpha^2>0\)，当 \(0<\omega<2\) 时成立（\(\alpha>0\)）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">对严格对角占优矩阵，Jacobi 和 Gauss-Seidel 方法是否一定收敛？给出理由。</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    是的，两者均收敛。<br><br>
+    严格对角占优：\(|a_{ii}|>\sum_{j\neq i}|a_{ij}|\)。<br><br>
+    Jacobi：\(\|B_J\|_\infty = \max_i\sum_{j\neq i}\frac{|a_{ij}|}{|a_{ii}|}<1\)，故 \(\rho(B_J)\le\|B_J\|_\infty<1\)，收敛。<br><br>
+    Gauss-Seidel：可用类似估计或利用"严格对角占优 \(\Rightarrow\) GS 收敛"定理（证明略复杂，需对 \(B_{GS}\) 的特征值做更细致分析）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">Sherman-Morrison 公式：若 \(A\) 可逆且 \(1+v^TA^{-1}u\neq0\)，则
+    \[(A+uv^T)^{-1}=A^{-1}-\frac{A^{-1}uv^TA^{-1}}{1+v^TA^{-1}u}\]</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    直接验证：令 \(B=A^{-1}-\frac{A^{-1}uv^TA^{-1}}{1+v^TA^{-1}u}\)，计算 \((A+uv^T)B\)：<br>
+    \(=I + uv^TA^{-1} - \frac{A^{-1}uv^TA^{-1}+uv^TA^{-1}uv^TA^{-1}}{1+v^TA^{-1}u}\cdot A\)（注意 \(v^TA^{-1}u\) 是标量）<br>
+    \(=I + uv^TA^{-1} - \frac{(1+v^TA^{-1}u)uv^TA^{-1}}{1+v^TA^{-1}u} = I+uv^TA^{-1}-uv^TA^{-1}=I\)。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

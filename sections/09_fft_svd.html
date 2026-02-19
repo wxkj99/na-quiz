@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>数学杂项 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 9 章：数学杂项</h1>
+
+<h2>9.1 傅里叶级数</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">周期为 \(2\pi\) 的函数 \(f\) 的复数形式 Fourier 系数及级数：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(\hat f_k =\) <input class="blank" style="min-width:240px"><br><br>
+    \(f(x) =\) <input class="blank" style="min-width:240px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[\hat f_k = \frac{1}{2\pi}\int_0^{2\pi} f(x)e^{-ikx}\,dx\]
+    \[f(x) = \sum_{k=-\infty}^{\infty}\hat f_k e^{ikx}\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">Parseval 等式：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(\dfrac{1}{2\pi}\int_0^{2\pi}|f(x)|^2\,dx =\) <input class="blank" style="min-width:180px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[\frac{1}{2\pi}\int_0^{2\pi}|f(x)|^2\,dx = \sum_{k=-\infty}^{\infty}|\hat f_k|^2\]
+  </div>
+</div>
+
+<h2>9.2 离散傅里叶变换与 FFT</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">长度为 \(n\) 的序列 \(\{f_j\}_{j=0}^{n-1}\) 的 DFT 定义：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(\hat f_k =\) <input class="blank" style="min-width:240px">，\(k=0,\dots,n-1\)
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[\hat f_k = \sum_{j=0}^{n-1} f_j e^{-2\pi ijk/n} = \sum_{j=0}^{n-1} f_j \omega_n^{jk}, \quad \omega_n = e^{-2\pi i/n}\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">FFT（Cooley-Tukey，\(n=2^m\)）的基本思想：如何将长度 \(n\) 的 DFT 分解为两个长度 \(n/2\) 的 DFT？计算复杂度从 \(O(n^2)\) 降到多少？</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    将序列按奇偶分组：\(f_j^{(e)}=f_{2j}\)，\(f_j^{(o)}=f_{2j+1}\)，\(j=0,\dots,n/2-1\)。<br><br>
+    \[\hat f_k = \hat f_k^{(e)} + \omega_n^k \hat f_k^{(o)}, \quad k=0,\dots,n/2-1\]
+    \[\hat f_{k+n/2} = \hat f_k^{(e)} - \omega_n^k \hat f_k^{(o)}\]
+    其中 \(\hat f^{(e)},\hat f^{(o)}\) 是长度 \(n/2\) 的 DFT（利用 \(\omega_n^{k+n/2}=-\omega_n^k\)）。<br><br>
+    递归分解，复杂度满足 \(T(n)=2T(n/2)+O(n)\)，解为 \(T(n)=O(n\log n)\)。
+  </div>
+</div>
+
+<h2>9.3 奇异值分解（SVD）</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">任意矩阵 \(A\in\mathbb{R}^{m\times n}\) 的 SVD 分解形式，以及奇异值的定义：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(A =\) <input class="blank" style="min-width:160px">，其中 <input class="blank" style="min-width:320px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(A = U\Sigma V^T\)，其中 \(U\in\mathbb{R}^{m\times m}\) 正交，\(V\in\mathbb{R}^{n\times n}\) 正交，\(\Sigma=\mathrm{diag}(\sigma_1,\dots,\sigma_r,0,\dots)\)，\(\sigma_1\ge\sigma_2\ge\cdots\ge\sigma_r>0\) 为奇异值（\(r=\mathrm{rank}(A)\)）。<br><br>
+    奇异值 \(\sigma_i = \sqrt{\lambda_i(A^TA)}\)；\(U\) 的列为 \(AA^T\) 的特征向量，\(V\) 的列为 \(A^TA\) 的特征向量。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">SVD 的几个重要应用：矩阵的 2-范数、F-范数、条件数、伪逆、低秩逼近（Eckart-Young 定理）。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(\|A\|_2 = \sigma_1\)，\(\|A\|_F = \sqrt{\sum\sigma_i^2}\)，\(\kappa_2(A)=\sigma_1/\sigma_r\)。<br><br>
+    伪逆：\(A^+ = V\Sigma^+U^T\)，其中 \(\Sigma^+=\mathrm{diag}(1/\sigma_1,\dots,1/\sigma_r,0,\dots)\)。<br><br>
+    <b>Eckart-Young 定理：</b>秩 \(k\) 的最佳逼近为 \(A_k=\sum_{i=1}^k\sigma_i u_iv_i^T\)，满足
+    \[\min_{\mathrm{rank}(B)\le k}\|A-B\|_2 = \sigma_{k+1}, \quad \min_{\mathrm{rank}(B)\le k}\|A-B\|_F = \sqrt{\sum_{i=k+1}^r\sigma_i^2}\]
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">证明任意矩阵 \(A\in\mathbb{R}^{m\times n}\) 的 SVD 分解存在。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(A^TA\) 是半正定对称矩阵，故有特征分解 \(A^TA = V\Lambda V^T\)，特征值 \(\lambda_1\ge\cdots\ge\lambda_n\ge0\)，令 \(\sigma_i=\sqrt{\lambda_i}\)。<br><br>
+    设 \(r=\mathrm{rank}(A)\)，令 \(u_i = Av_i/\sigma_i\)（\(i\le r\)），则 \(\{u_i\}\) 两两正交（\(\langle u_i,u_j\rangle = v_i^TA^TAv_j/(\sigma_i\sigma_j)=\delta_{ij}\)），扩充为 \(\mathbb{R}^m\) 的标准正交基 \(U\)。<br><br>
+    验证：\(AV = U\Sigma\)，即 \(A=U\Sigma V^T\)。
+  </div>
+</div>
+
+
+<h2>9.4 矩阵分析补充</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">Eckart-Young 定理：设 \(A=U\Sigma V^T\)，\(A_k=\sum_{i=1}^k\sigma_i u_iv_i^T\)，则
+    \[\min_{\mathrm{rank}(B)\le k}\|A-B\|_2=\sigma_{k+1}\]</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>上界：</b>\(\|A-A_k\|_2=\|\sum_{i>k}\sigma_i u_iv_i^T\|_2=\sigma_{k+1}\)（奇异值有序）。<br><br>
+    <b>下界：</b>设 \(\mathrm{rank}(B)\le k\)，则 \(\dim\ker B\ge n-k\)。考虑子空间 \(W=\mathrm{span}\{v_1,\dots,v_{k+1}\}\)（维数 \(k+1\)），由维数公式 \(\ker B\cap W\neq\{0\}\)，取单位向量 \(w\in\ker B\cap W\)。<br>
+    \(\|A-B\|_2\ge\|(A-B)w\|_2=\|Aw\|_2\)（因 \(Bw=0\)）。<br>
+    \(\|Aw\|_2^2=\|U\Sigma V^Tw\|_2^2=\|\Sigma V^Tw\|_2^2\ge\sigma_{k+1}^2\|V^Tw\|_2^2=\sigma_{k+1}^2\)（因 \(w\in W\) 故 \(V^Tw\) 只有前 \(k+1\) 分量非零，且 \(\|w\|=1\)）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">Moore-Penrose 伪逆的定义：对 \(A=U\Sigma V^T\)，</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(A^+ =\) <input class="blank" style="min-width:200px">，其中 \(\Sigma^+ =\) <input class="blank" style="min-width:240px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(A^+ = V\Sigma^+ U^T\)，其中 \(\Sigma^+=\mathrm{diag}(1/\sigma_1,\dots,1/\sigma_r,0,\dots)\)（对非零奇异值取倒数，零奇异值保持为零）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">Moore-Penrose 伪逆 \(A^+=V\Sigma^+U^T\) 满足四个 Penrose 条件：
+    \(AA^+A=A\)，\(A^+AA^+=A^+\)，\((AA^+)^T=AA^+\)，\((A^+A)^T=A^+A\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    令 \(P=AA^+=U\Sigma\Sigma^+U^T\)，\(Q=A^+A=V\Sigma^+\Sigma V^T\)。注意 \(\Sigma\Sigma^+=\mathrm{diag}(1,\dots,1,0,\dots)\)（前 \(r\) 个为1），故 \(P,Q\) 均为正交投影矩阵（对称幂等）。<br><br>
+    ① \(AA^+A=P\cdot A=U\Sigma\Sigma^+U^T\cdot U\Sigma V^T=U\Sigma V^T=A\)。<br>
+    ② \(A^+AA^+=Q\cdot A^+=V\Sigma^+\Sigma V^T\cdot V\Sigma^+U^T=V\Sigma^+U^T=A^+\)。<br>
+    ③ \((AA^+)^T=P^T=P=AA^+\)（\(P\) 对称）。<br>
+    ④ \((A^+A)^T=Q^T=Q=A^+A\)（\(Q\) 对称）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-short">简答</span>
+    <span class="q-text">用 SVD 求最小二乘问题 \(\min_x\|Ax-b\|_2\) 的最小范数解，写出表达式并说明几何意义。</span>
+  </div>
+  <textarea class="write-area" placeholder="在此作答..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    最小范数最小二乘解：\(x^+=A^+b=V\Sigma^+U^Tb\)。<br><br>
+    几何意义：\(x^+\in\mathrm{row}(A)=\ker(A)^\perp\)（在行空间中），\(Ax^+\) 是 \(b\) 在 \(\mathrm{col}(A)\) 上的正交投影 \(AA^+b\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(A\in\mathbb{R}^{n\times n}\) 正规矩阵（\(AA^T=A^TA\)），证明 \(A\) 的奇异值等于其特征值的模。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    正规矩阵可酉对角化：\(A=Q\Lambda Q^*\)，\(\Lambda=\mathrm{diag}(\lambda_1,\dots,\lambda_n)\)。<br>
+    \(A^TA=Q\bar\Lambda Q^*\cdot Q\Lambda Q^*=Q|\Lambda|^2Q^*\)，其中 \(|\Lambda|^2=\mathrm{diag}(|\lambda_i|^2)\)。<br>
+    故 \(A^TA\) 的特征值为 \(|\lambda_i|^2\)，奇异值 \(\sigma_i=\sqrt{|\lambda_i|^2}=|\lambda_i|\)。
+  </div>
+</div>
+
+<h2>9.5 投影与正交分解</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(P\in\mathbb{R}^{n\times n}\) 满足 \(P^2=P\)（幂等），证明 \(P\) 是正交投影（即 \(P^T=P\)）当且仅当 \(\|Px\|\le\|x\|\) 对所有 \(x\) 成立。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>充分性（\(P^T=P\Rightarrow\|Px\|\le\|x\|\)）：</b><br>
+    \(\|x\|^2=\|Px+(I-P)x\|^2=\|Px\|^2+2\langle Px,(I-P)x\rangle+\|(I-P)x\|^2\)。<br>
+    \(\langle Px,(I-P)x\rangle=x^TP^T(I-P)x=x^TP(I-P)x=x^T(P-P^2)x=0\)（因 \(P^2=P\)）。<br>
+    故 \(\|x\|^2=\|Px\|^2+\|(I-P)x\|^2\ge\|Px\|^2\)。<br><br>
+    <b>必要性（\(\|Px\|\le\|x\|\Rightarrow P^T=P\)）：</b><br>
+    对任意 \(x\)，\(\|P(I-P)x\|\le\|(I-P)x\|\)，但 \(P(I-P)=P-P^2=0\)，故 \(0\le\|(I-P)x\|\)（平凡）。<br>
+    更直接：\(\|Px\|^2\le\|x\|^2\) 对所有 \(x\) 意味着 \(I-P^TP\succeq0\)。又 \(P^2=P\Rightarrow(P^TP)^2=P^T(PP^T)P\)，结合 \(I-P^TP\succeq0\) 可推出 \(P^T=P\)（利用 \(\mathrm{tr}(P^TP)=\mathrm{tr}(P)\) 等）。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

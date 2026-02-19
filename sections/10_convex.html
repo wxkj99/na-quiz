@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>凸优化 · 数值分析默写卷</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<a class="nav-back" href="../index.html">← 返回目录</a>
+<h1>第 10 章：凸优化基础</h1>
+
+<h2>10.1 凸集与凸函数</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">凸集的定义：集合 \(C\) 是凸集，当且仅当</span>
+  </div>
+  <div style="margin:0.5rem 0"><input class="blank" style="min-width:320px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(\forall x,y\in C,\,\forall\theta\in[0,1]:\,\theta x+(1-\theta)y\in C\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">凸函数的定义（用不等式）及一阶、二阶判别条件：</span>
+  </div>
+  <textarea class="write-area" placeholder="写出定义及判别条件..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>定义：</b>\(f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y)\)，\(\forall x,y\in\mathrm{dom}\,f,\,\theta\in[0,1]\)。<br><br>
+    <b>一阶条件（\(f\) 可微）：</b>\(f(y)\ge f(x)+\nabla f(x)^T(y-x)\)，\(\forall x,y\)。<br><br>
+    <b>二阶条件（\(f\) 二阶可微）：</b>\(\nabla^2 f(x)\succeq 0\)，\(\forall x\in\mathrm{dom}\,f\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(f:\mathbb{R}^n\to\mathbb{R}\) 凸，\(x\in\mathrm{int\,dom}\,f\)，证明次梯度集 \(\partial f(x)\) 非空且有界。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>非空：</b>考虑 \(\mathbb{R}^{n+1}\) 中的集合 \(\mathrm{epi}(f)=\{(x,t):f(x)\le t\}\)（凸集）和点 \((x,f(x))\in\partial\,\mathrm{epi}(f)\)。由支撑超平面定理，存在 \((g,\mu)\neq0\) 使 \(g^T(y-x)+\mu(t-f(x))\le0\) 对所有 \((y,t)\in\mathrm{epi}(f)\)。取 \(t\to+\infty\) 得 \(\mu\le0\)；若 \(\mu=0\) 则 \(g=0\)（矛盾），故 \(\mu<0\)，令 \(s=-g/\mu\)，则 \(s\in\partial f(x)\)。<br><br>
+    <b>有界：</b>因 \(x\in\mathrm{int\,dom}\,f\)，存在 \(\delta>0\) 使 \(B(x,\delta)\subset\mathrm{dom}\,f\)，\(f\) 在 \(B\) 上有上界 \(M\)。对任意 \(g\in\partial f(x)\) 和 \(\|d\|=1\)：\(f(x+\delta d)\ge f(x)+\delta g^Td\)，故 \(g^Td\le(M-f(x))/\delta\)，即 \(\|g\|\le(M-f(x))/\delta\)。
+  </div>
+</div>
+
+<h2>10.2 次梯度</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">次梯度的定义：\(g\in\partial f(x)\) 当且仅当</span>
+  </div>
+  <div style="margin:0.5rem 0"><input class="blank" style="min-width:320px"></div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(f(y)\ge f(x)+g^T(y-x),\quad\forall y\in\mathrm{dom}\,f\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">写出 \(f(x)=\|x\|_1\) 的次梯度集 \(\partial f(x)\)：</span>
+  </div>
+  <textarea class="write-area" placeholder="分情况写出..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \((\partial\|x\|_1)_i = \begin{cases}\{1\} & x_i>0\\ \{-1\} & x_i<0\\ [-1,1] & x_i=0\end{cases}\)
+    即 \(\partial\|x\|_1 = \{g:\,g_i=\mathrm{sign}(x_i)\text{ 若 }x_i\neq0,\,g_i\in[-1,1]\text{ 若 }x_i=0\}\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明/计算</span>
+    <span class="q-text">计算 proximal 算子：给定 \(y\in\mathbb{R}^n,\lambda>0\)，求
+    \[\mathrm{prox}_{\lambda\|\cdot\|_1}(y) = \arg\min_x\frac{1}{2}\|x-y\|_2^2+\lambda\|x\|_1\]
+    的闭式解（软阈值算子）。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出推导..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    问题可分离，对每个分量独立求解：\(\min_{x_i}\frac{1}{2}(x_i-y_i)^2+\lambda|x_i|\)。<br><br>
+    最优性条件（次梯度为零）：\(x_i - y_i + \lambda\partial|x_i|\ni 0\)。<br><br>
+    分情况：若 \(x_i>0\)：\(x_i=y_i-\lambda\)，需 \(y_i>\lambda\)；若 \(x_i<0\)：\(x_i=y_i+\lambda\)，需 \(y_i<-\lambda\)；若 \(x_i=0\)：需 \(|y_i|\le\lambda\)。<br><br>
+    故软阈值算子：\(x_i^* = \mathcal{S}_\lambda(y_i) = \mathrm{sign}(y_i)\max(|y_i|-\lambda,0)\)。
+  </div>
+</div>
+
+<h2>10.3 Lagrange 对偶</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">原问题 \(\min f_0(x)\) s.t. \(f_i(x)\le0,\,h_j(x)=0\) 的 Lagrange 函数和对偶函数：</span>
+  </div>
+  <div style="margin:0.5rem 0">
+    \(L(x,\lambda,\nu) =\) <input class="blank" style="min-width:320px"><br><br>
+    \(g(\lambda,\nu) =\) <input class="blank" style="min-width:200px">
+  </div>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \[L(x,\lambda,\nu) = f_0(x)+\sum_i\lambda_i f_i(x)+\sum_j\nu_j h_j(x)\]
+    \[g(\lambda,\nu) = \inf_x L(x,\lambda,\nu)\]
+    对偶问题：\(\max g(\lambda,\nu)\) s.t. \(\lambda\ge0\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">弱对偶定理：对偶最优值 \(d^*\le\) 原问题最优值 \(p^*\)。</span>
+  </div>
+  <textarea class="write-area" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    对任意可行 \(\tilde x\)（满足约束）和 \(\lambda\ge0\)：
+    \[g(\lambda,\nu)\le L(\tilde x,\lambda,\nu) = f_0(\tilde x)+\underbrace{\sum\lambda_i f_i(\tilde x)}_{\le0}+\underbrace{\sum\nu_j h_j(\tilde x)}_{=0}\le f_0(\tilde x)\]
+    对 \(\tilde x\) 取下确界得 \(g(\lambda,\nu)\le p^*\)，再对 \(\lambda,\nu\) 取上确界得 \(d^*\le p^*\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-fill">填空</span>
+    <span class="q-text">KKT 条件（原问题凸时为最优性充要条件）：</span>
+  </div>
+  <textarea class="write-area" placeholder="写出全部 KKT 条件..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    ① 原始可行性：\(f_i(x^*)\le0,\,h_j(x^*)=0\)<br>
+    ② 对偶可行性：\(\lambda_i^*\ge0\)<br>
+    ③ 互补松弛：\(\lambda_i^* f_i(x^*)=0\)<br>
+    ④ 稳定性（梯度条件）：\(\nabla f_0(x^*)+\sum_i\lambda_i^*\nabla f_i(x^*)+\sum_j\nu_j^*\nabla h_j(x^*)=0\)
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明/推导</span>
+    <span class="q-text">（参考 QE25A 第7题）设 \(K\subset\mathbb{R}^n\) 为非空闭凸集，\(\Pi_K(z)=\arg\min_{y\in K}\frac{1}{2}\|y-z\|^2\)。证明：\(\langle z-\Pi_K(z),\,d-\Pi_K(z)\rangle\le0\)，\(\forall d\in K\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    设 \(x^*=\Pi_K(z)\)，对任意 \(d\in K\) 和 \(t\in[0,1]\)，由 \(K\) 的凸性，\(x^*+t(d-x^*)\in K\)。<br><br>
+    由 \(x^*\) 的最优性：\(\frac{1}{2}\|x^*+t(d-x^*)-z\|^2\ge\frac{1}{2}\|x^*-z\|^2\)。<br><br>
+    展开：\(t^2\|d-x^*\|^2 + 2t\langle x^*-z,d-x^*\rangle\ge0\)，除以 \(t>0\) 后令 \(t\to0^+\)：
+    \[\langle x^*-z,d-x^*\rangle\ge0\]
+    即 \(\langle z-\Pi_K(z),d-\Pi_K(z)\rangle\le0\)。
+  </div>
+</div>
+
+
+<h2>10.4 原创练习题</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(f\) 凸可微，证明 \(f\) 的一阶条件：\(f(y)\ge f(x)+\nabla f(x)^T(y-x)\) 对所有 \(x,y\) 成立。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    由凸性，对 \(t\in(0,1]\)：\(f(x+t(y-x))\le(1-t)f(x)+tf(y)\)，即 \(\frac{f(x+t(y-x))-f(x)}{t}\le f(y)-f(x)\)。<br>
+    令 \(t\to0^+\)，左边趋于 \(\nabla f(x)^T(y-x)\)，故 \(\nabla f(x)^T(y-x)\le f(y)-f(x)\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(f\) 二阶可微，证明 \(f\) 凸 \(\Leftrightarrow\) \(\nabla^2 f(x)\succeq0\) 对所有 \(x\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>\(\Rightarrow\)：</b>由一阶条件，\(f(x+td)\ge f(x)+t\nabla f(x)^Td\) 和 \(f(x)\ge f(x+td)+(-t)\nabla f(x+td)^Td\)，两式相加除以 \(t^2\) 令 \(t\to0\) 得 \(d^T\nabla^2f(x)d\ge0\)。<br><br>
+    <b>\(\Leftarrow\)：</b>由 Taylor 展开，\(f(y)=f(x)+\nabla f(x)^T(y-x)+\frac{1}{2}(y-x)^T\nabla^2f(\xi)(y-x)\ge f(x)+\nabla f(x)^T(y-x)\)（因 \(\nabla^2f\succeq0\)），由一阶条件等价性得 \(f\) 凸。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">设 \(f\) 凸，\(x^*\) 是局部极小值点，证明 \(x^*\) 也是全局极小值点。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    反设存在 \(y\) 使 \(f(y) &lt; f(x^*)\)。对 \(t\in(0,1)\)，令 \(z=x^*+t(y-x^*)\)，由凸性：<br>
+    \(f(z)\le(1-t)f(x^*)+tf(y) &lt; f(x^*)\)。<br>
+    当 \(t\to0\) 时 \(z\to x^*\)，故在 \(x^*\) 的任意邻域内存在函数值更小的点，与 \(x^*\) 是局部极小矛盾。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">（QE25A 第7题续）定义 \(\Theta(z)=\frac{1}{2}\|z-\Pi_K(z)\|^2\)，证明 \(\Theta\) 是凸函数且 \(\nabla\Theta(z)=z-\Pi_K(z)\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>梯度：</b>对 \(z\) 的扰动 \(\delta z\)，令 \(p=\Pi_K(z)\)，\(p'=\Pi_K(z+\delta z)\)：<br>
+    \(\Theta(z+\delta z)-\Theta(z)=\frac{1}{2}\|z+\delta z-p'\|^2-\frac{1}{2}\|z-p\|^2\)<br>
+    \(\ge\frac{1}{2}\|z+\delta z-p\|^2-\frac{1}{2}\|z-p\|^2\)（\(p'\) 是最优点）<br>
+    \(=\langle z-p,\delta z\rangle+O(\|\delta z\|^2)\)<br>
+    类似地 \(\Theta(z+\delta z)-\Theta(z)\le\langle z+\delta z-p',\delta z\rangle+O(\|\delta z\|^2)=\langle z-p,\delta z\rangle+O(\|\delta z\|^2)\)（利用投影的非扩张性 \(\|p'-p\|\le\|\delta z\|\)）。<br>
+    故 \(\nabla\Theta(z)=z-\Pi_K(z)\)。<br><br>
+    <b>凸性：</b>\(\Theta(z)=\min_{y\in K}\frac{1}{2}\|z-y\|^2\) 的补函数 \(\frac{1}{2}\|z\|^2-\Theta(z)=\max_{y\in K}[\langle z,y\rangle-\frac{1}{2}\|y\|^2]\) 是凸函数（逐点上确界），故 \(\Theta\) 是凸函数（\(\frac{1}{2}\|z\|^2\) 减去凸函数不一定凸，但可直接用 \(\nabla^2\Theta\succeq0\) 验证，或用 \(\Pi_K\) 的非扩张性证明 \(\nabla\Theta\) 单调）。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">（QE25A 第7题）设 \(\min\|y\|_2+\gamma\|x\|_1\) s.t. \(Ax-b=y\) 的最优解为 \((x^*,y^*)\)，\(r=y^*/\|y^*\|_2\)（设 \(y^*\neq0\)）。证明 \(\|A^Tr\|_\infty\le\gamma\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明（提示：写出 KKT 条件）..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    Lagrange 函数：\(L=\|y\|_2+\gamma\|x\|_1+\lambda^T(Ax-b-y)\)。<br><br>
+    KKT 稳定性条件：<br>
+    对 \(y\)：\(\partial_y L\ni0\Rightarrow\frac{y^*}{\|y^*\|_2}-\lambda=0\Rightarrow\lambda=r\)。<br>
+    对 \(x\)：\(\partial_x L\ni0\Rightarrow A^T\lambda\in\gamma\partial\|x^*\|_1\Rightarrow A^Tr\in\gamma\partial\|x^*\|_1\)。<br><br>
+    由次梯度定义，\(\partial\|x\|_1\) 的每个分量在 \([-1,1]\) 内，故 \(\|A^Tr\|_\infty=\|A^Tr\|_\infty\le\gamma\cdot1=\gamma\)。
+  </div>
+</div>
+
+<h2>10.5 原创综合题</h2>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明/推导</span>
+    <span class="q-text">考虑问题 \(\min_{x\in\mathbb{R}^n}\|Cx-d\|_2^2 + \mu\|x\|_2^2\)（岭回归，\(\mu>0\)，\(C\in\mathbb{R}^{m\times n}\)）。<br>
+    (a) 写出等价约束形式 \(\min\|y\|_2^2+\mu\|x\|_2^2\) s.t. \(Cx-d=y\)，推导 Lagrange 对偶函数 \(g(\lambda)\)。<br>
+    (b) 写出对偶问题，并证明强对偶成立（\(d^*=p^*\)）。<br>
+    (c) 由 KKT 条件推导原问题的闭式解 \(x^*=(C^TC+\mu I)^{-1}C^Td\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出推导..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    <b>(a)</b> Lagrange 函数：\(L(x,y,\lambda)=\|y\|_2^2+\mu\|x\|_2^2+\lambda^T(Cx-d-y)\)。<br>
+    对 \(x\) 最小化：\(\nabla_x L=2\mu x+C^T\lambda=0\Rightarrow x=-\frac{1}{2\mu}C^T\lambda\)。<br>
+    对 \(y\) 最小化：\(\nabla_y L=2y-\lambda=0\Rightarrow y=\frac{\lambda}{2}\)。<br>
+    代入：\(g(\lambda)=-\frac{1}{4\mu}\|C^T\lambda\|_2^2-\frac{1}{4}\|\lambda\|_2^2-\lambda^Td\)。<br><br>
+    <b>(b)</b> 对偶问题：\(\max_\lambda g(\lambda)\)（无约束，因原变量无约束）。<br>
+    原问题为凸问题且无约束（Slater 条件自动满足），故强对偶成立。<br><br>
+    <b>(c)</b> KKT 稳定性条件：\(2\mu x^*+C^T\lambda^*=0\)，\(2y^*-\lambda^*=0\)，原始可行：\(Cx^*-d=y^*\)。<br>
+    由前两式：\(\lambda^*=2y^*=2(Cx^*-d)\)，代入第一式：\(2\mu x^*+2C^T(Cx^*-d)=0\)，<br>
+    即 \((C^TC+\mu I)x^*=C^Td\)，故 \(x^*=(C^TC+\mu I)^{-1}C^Td\)（\(C^TC+\mu I\) 正定，可逆）。
+  </div>
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

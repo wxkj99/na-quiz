@@ -1,0 +1,132 @@
+:root {
+  --bg: #1e1e2e;
+  --surface: #2a2a3e;
+  --border: #44475a;
+  --text: #cdd6f4;
+  --muted: #6c7086;
+  --accent: #89b4fa;
+  --green: #a6e3a1;
+  --yellow: #f9e2af;
+  --red: #f38ba8;
+  --blank-bg: #313244;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+h1 { color: var(--accent); font-size: 1.6rem; margin-bottom: 0.3rem; }
+h2 { color: var(--yellow); font-size: 1.2rem; margin: 2rem 0 1rem; border-left: 3px solid var(--yellow); padding-left: 0.7rem; }
+h3 { color: var(--green); font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+
+.nav-back { display: inline-block; color: var(--muted); text-decoration: none; margin-bottom: 1.5rem; font-size: 0.9rem; }
+.nav-back:hover { color: var(--accent); }
+
+.question {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+}
+
+.question-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.q-type {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.type-fill { background: #45475a; color: var(--yellow); }
+.type-short { background: #45475a; color: var(--green); }
+.type-proof { background: #45475a; color: var(--red); }
+
+.q-text { flex: 1; }
+
+/* blank: inline input for fill-in */
+input.blank {
+  display: inline-block;
+  min-width: 120px;
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  margin: 0 4px;
+  vertical-align: bottom;
+  height: 1.4em;
+  background: var(--blank-bg);
+  border-radius: 3px 3px 0 0;
+  padding: 0 4px;
+  color: var(--text);
+  font-size: inherit;
+  font-family: inherit;
+  outline: none;
+}
+input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
+
+/* write area for short/proof */
+.write-area {
+  width: 100%;
+  min-height: 80px;
+  background: var(--blank-bg);
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  margin-top: 0.6rem;
+  padding: 0.5rem;
+  color: var(--text);
+  font-size: 0.85rem;
+  resize: vertical;
+}
+.write-area.tall { min-height: 160px; }
+.write-area.xtall { min-height: 240px; }
+
+/* answer reveal */
+.answer-btn {
+  margin-top: 0.7rem;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.3rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all 0.15s;
+}
+.answer-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.answer {
+  display: none;
+  margin-top: 0.7rem;
+  padding: 0.7rem 1rem;
+  background: #1a1a2e;
+  border-left: 3px solid var(--green);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.92rem;
+}
+.answer.visible { display: block; }
+
+/* print */
+@media print {
+  body { background: white; color: black; padding: 1rem; }
+  .answer, .answer-btn { display: none !important; }
+  .write-area { border: 1px solid #ccc; background: white; color: transparent; }
+  input.blank { background: white; border-bottom: 1.5px solid black; color: black; }
+  .nav-back { display: none; }
+  h1, h2, h3 { color: black; }
+  .question { border: 1px solid #ccc; background: white; }
+  .q-type { border: 1px solid #999; }
+}
