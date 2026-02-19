@@ -1,6 +1,5 @@
 // Auto-number questions: derive chapter prefix from filename
-const chapterMatch = location.pathname.match(/(\d+)/);
-const prefix = chapterMatch ? chapterMatch[1] : '0';
+const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
 
 document.querySelectorAll('.question').forEach((q, i) => {
   const num = document.createElement('span');
