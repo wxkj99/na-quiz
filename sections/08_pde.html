@@ -181,6 +181,44 @@
   </div>
 </div>
 
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">用能量方法证明热方程 Crank-Nicolson 格式的稳定性：\(\|u^{n+1}\|_2\le\|u^n\|_2\)（周期边界）。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    CN 格式：\(\frac{u^{n+1}-u^n}{\tau}=\frac{1}{2h^2}(\delta_x^2 u^n+\delta_x^2 u^{n+1})\)。<br><br>
+    两边与 \(u^{n+1}+u^n\) 做内积（\(\langle\cdot,\cdot\rangle=h\sum_j\)）：<br>
+    左边：\(\frac{1}{\tau}\langle u^{n+1}-u^n,u^{n+1}+u^n\rangle=\frac{1}{\tau}(\|u^{n+1}\|^2-\|u^n\|^2)\)。<br>
+    右边：\(\frac{1}{2h^2}\langle\delta_x^2(u^n+u^{n+1}),u^{n+1}+u^n\rangle=-\frac{1}{2h^2}\|\delta_x^+(u^n+u^{n+1})\|^2\le0\)<br>
+    （用分部求和：\(\langle\delta_x^2 v,v\rangle=-\|\delta_x^+v\|^2\)）。<br><br>
+    故 \(\|u^{n+1}\|^2\le\|u^n\|^2\)，无条件稳定。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">离散分部求和公式（Abel 求和）：对周期序列 \(\{u_j\},\{v_j\}\)，证明
+    \[\sum_j u_j(\delta_x^2 v_j) = -\sum_j (\delta_x^+ u_j)(\delta_x^+ v_j)\]
+    其中 \(\delta_x^+ u_j=u_{j+1}-u_j\)，\(\delta_x^2 v_j=v_{j+1}-2v_j+v_{j-1}\)。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    \(\sum_j u_j\delta_x^2 v_j = \sum_j u_j(v_{j+1}-2v_j+v_{j-1})\)<br>
+    \(=\sum_j u_j v_{j+1} - 2\sum_j u_j v_j + \sum_j u_j v_{j-1}\)<br>
+    平移指标：\(\sum_j u_j v_{j+1}=\sum_j u_{j-1}v_j\)，\(\sum_j u_j v_{j-1}=\sum_j u_{j+1}v_j\)，故<br>
+    \(=\sum_j(u_{j-1}+u_{j+1}-2u_j)v_j = -\sum_j(2u_j-u_{j-1}-u_{j+1})v_j\)<br>
+    另一方面 \(\sum_j(\delta_x^+u_j)(\delta_x^+v_j)=\sum_j(u_{j+1}-u_j)(v_{j+1}-v_j)\)<br>
+    \(=\sum_j u_{j+1}v_{j+1}-\sum_j u_{j+1}v_j-\sum_j u_j v_{j+1}+\sum_j u_j v_j\)<br>
+    \(=\sum_j u_j v_j - \sum_j u_j v_{j-1} - \sum_j u_{j-1}v_j + \sum_j u_j v_j = \sum_j(2u_j-u_{j-1}-u_{j+1})v_j\)<br>
+    两式相加为零，得证。
+  </div>
+</div>
+
 <h2>8.5 更多 Scheme 分析</h2>
 
 <div class="question">
@@ -252,44 +290,6 @@
     增长矩阵方程：\(\frac{g-1}{\tau}\begin{pmatrix}1\\0\end{pmatrix}=-\frac{s}{2}(1+g)\begin{pmatrix}0\\1\end{pmatrix}\)（类似地对 \(v\)），整理得
     \[\begin{pmatrix}1&\frac{\tau s}{2}(1+g)\\-\frac{\tau s}{2}(1+g)&1\end{pmatrix}\begin{pmatrix}g_u\\g_v\end{pmatrix}=\begin{pmatrix}1\\1\end{pmatrix}\]
     增长矩阵特征值满足 \(|\lambda|=1\)（反斜对称结构），故<b>无条件稳定</b>。
-  </div>
-</div>
-
-<div class="question">
-  <div class="question-header">
-    <span class="q-type type-proof">证明</span>
-    <span class="q-text">用能量方法证明热方程 Crank-Nicolson 格式的稳定性：\(\|u^{n+1}\|_2\le\|u^n\|_2\)（周期边界）。</span>
-  </div>
-  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
-  <button class="answer-btn">显示答案</button>
-  <div class="answer">
-    CN 格式：\(\frac{u^{n+1}-u^n}{\tau}=\frac{1}{2h^2}(\delta_x^2 u^n+\delta_x^2 u^{n+1})\)。<br><br>
-    两边与 \(u^{n+1}+u^n\) 做内积（\(\langle\cdot,\cdot\rangle=h\sum_j\)）：<br>
-    左边：\(\frac{1}{\tau}\langle u^{n+1}-u^n,u^{n+1}+u^n\rangle=\frac{1}{\tau}(\|u^{n+1}\|^2-\|u^n\|^2)\)。<br>
-    右边：\(\frac{1}{2h^2}\langle\delta_x^2(u^n+u^{n+1}),u^{n+1}+u^n\rangle=-\frac{1}{2h^2}\|\delta_x^+(u^n+u^{n+1})\|^2\le0\)<br>
-    （用分部求和：\(\langle\delta_x^2 v,v\rangle=-\|\delta_x^+v\|^2\)）。<br><br>
-    故 \(\|u^{n+1}\|^2\le\|u^n\|^2\)，无条件稳定。
-  </div>
-</div>
-
-<div class="question">
-  <div class="question-header">
-    <span class="q-type type-proof">证明</span>
-    <span class="q-text">离散分部求和公式（Abel 求和）：对周期序列 \(\{u_j\},\{v_j\}\)，证明
-    \[\sum_j u_j(\delta_x^2 v_j) = -\sum_j (\delta_x^+ u_j)(\delta_x^+ v_j)\]
-    其中 \(\delta_x^+ u_j=u_{j+1}-u_j\)，\(\delta_x^2 v_j=v_{j+1}-2v_j+v_{j-1}\)。</span>
-  </div>
-  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
-  <button class="answer-btn">显示答案</button>
-  <div class="answer">
-    \(\sum_j u_j\delta_x^2 v_j = \sum_j u_j(v_{j+1}-2v_j+v_{j-1})\)<br>
-    \(=\sum_j u_j v_{j+1} - 2\sum_j u_j v_j + \sum_j u_j v_{j-1}\)<br>
-    平移指标：\(\sum_j u_j v_{j+1}=\sum_j u_{j-1}v_j\)，\(\sum_j u_j v_{j-1}=\sum_j u_{j+1}v_j\)，故<br>
-    \(=\sum_j(u_{j-1}+u_{j+1}-2u_j)v_j = -\sum_j(2u_j-u_{j-1}-u_{j+1})v_j\)<br>
-    另一方面 \(\sum_j(\delta_x^+u_j)(\delta_x^+v_j)=\sum_j(u_{j+1}-u_j)(v_{j+1}-v_j)\)<br>
-    \(=\sum_j u_{j+1}v_{j+1}-\sum_j u_{j+1}v_j-\sum_j u_j v_{j+1}+\sum_j u_j v_j\)<br>
-    \(=\sum_j u_j v_j - \sum_j u_j v_{j-1} - \sum_j u_{j-1}v_j + \sum_j u_j v_j = \sum_j(2u_j-u_{j-1}-u_{j+1})v_j\)<br>
-    两式相加为零，得证。
   </div>
 </div>
 
