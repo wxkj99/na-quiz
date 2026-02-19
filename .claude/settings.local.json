@@ -31,7 +31,8 @@
       "Bash(powershell -ExecutionPolicy Bypass -File:*)",
       "Bash(git -C \"D:/math/NA\" commit -m \"font slider 7 levels\")",
       "Bash(git -C \"D:/blog\" commit -m \"update na\")",
-      "Bash(git -C \"D:/math/NA\" commit -m \"widen layout, mobile padding\")"
+      "Bash(git -C \"D:/math/NA\" commit -m \"widen layout, mobile padding\")",
+      "Bash(git -C \"D:/math/NA\" commit -m \"max-width 1050px\")"
     ]
   }
 }
