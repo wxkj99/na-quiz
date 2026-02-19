@@ -52,6 +52,22 @@
   </div>
 </div>
 
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明/推导</span>
+    <span class="q-text">（参考 QE25A 第7题）设 \(K\subset\mathbb{R}^n\) 为非空闭凸集，\(\Pi_K(z)=\arg\min_{y\in K}\frac{1}{2}\|y-z\|^2\)。证明：\(\langle z-\Pi_K(z),\,d-\Pi_K(z)\rangle\le0\)，\(\forall d\in K\)。</span>
+  </div>
+  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    设 \(x^*=\Pi_K(z)\)，对任意 \(d\in K\) 和 \(t\in[0,1]\)，由 \(K\) 的凸性，\(x^*+t(d-x^*)\in K\)。<br><br>
+    由 \(x^*\) 的最优性：\(\frac{1}{2}\|x^*+t(d-x^*)-z\|^2\ge\frac{1}{2}\|x^*-z\|^2\)。<br><br>
+    展开：\(t^2\|d-x^*\|^2 + 2t\langle x^*-z,d-x^*\rangle\ge0\)，除以 \(t>0\) 后令 \(t\to0^+\)：
+    \[\langle x^*-z,d-x^*\rangle\ge0\]
+    即 \(\langle z-\Pi_K(z),d-\Pi_K(z)\rangle\le0\)。
+  </div>
+</div>
+
 <h2>10.2 次梯度</h2>
 
 <div class="question">
@@ -141,22 +157,6 @@
     ② 对偶可行性：\(\lambda_i^*\ge0\)<br>
     ③ 互补松弛：\(\lambda_i^* f_i(x^*)=0\)<br>
     ④ 稳定性（梯度条件）：\(\nabla f_0(x^*)+\sum_i\lambda_i^*\nabla f_i(x^*)+\sum_j\nu_j^*\nabla h_j(x^*)=0\)
-  </div>
-</div>
-
-<div class="question">
-  <div class="question-header">
-    <span class="q-type type-proof">证明/推导</span>
-    <span class="q-text">（参考 QE25A 第7题）设 \(K\subset\mathbb{R}^n\) 为非空闭凸集，\(\Pi_K(z)=\arg\min_{y\in K}\frac{1}{2}\|y-z\|^2\)。证明：\(\langle z-\Pi_K(z),\,d-\Pi_K(z)\rangle\le0\)，\(\forall d\in K\)。</span>
-  </div>
-  <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
-  <button class="answer-btn">显示答案</button>
-  <div class="answer">
-    设 \(x^*=\Pi_K(z)\)，对任意 \(d\in K\) 和 \(t\in[0,1]\)，由 \(K\) 的凸性，\(x^*+t(d-x^*)\in K\)。<br><br>
-    由 \(x^*\) 的最优性：\(\frac{1}{2}\|x^*+t(d-x^*)-z\|^2\ge\frac{1}{2}\|x^*-z\|^2\)。<br><br>
-    展开：\(t^2\|d-x^*\|^2 + 2t\langle x^*-z,d-x^*\rangle\ge0\)，除以 \(t>0\) 后令 \(t\to0^+\)：
-    \[\langle x^*-z,d-x^*\rangle\ge0\]
-    即 \(\langle z-\Pi_K(z),d-\Pi_K(z)\rangle\le0\)。
   </div>
 </div>
 
