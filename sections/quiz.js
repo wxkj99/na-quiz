@@ -29,18 +29,23 @@ document.addEventListener('click', e => {
 
 // Font size controls
 const FONT_KEY = 'fontSize';
-const sizes = ['0.85rem', '1rem', '1.15rem', '1.3rem'];
-let sizeIdx = parseInt(localStorage.getItem(FONT_KEY) || '1');
-document.documentElement.style.fontSize = sizes[sizeIdx];
+const sizes = ['0.75rem','0.85rem','0.95rem','1.05rem','1.18rem','1.32rem','1.5rem'];
+let sizeIdx = parseInt(localStorage.getItem(FONT_KEY) || '2');
+const applySize = () => {
+  document.documentElement.style.fontSize = sizes[sizeIdx];
+  ctrl.querySelector('span').textContent = sizes[sizeIdx];
+  slider.value = sizeIdx;
+};
 
 const ctrl = document.createElement('div');
 ctrl.className = 'font-controls';
-ctrl.innerHTML = '<button id="fz-">A-</button><button id="fz+">A+</button>';
+ctrl.innerHTML = 'A <input type="range" min="0" max="6" step="1"> <span></span>';
 document.body.appendChild(ctrl);
 
-document.getElementById('fz-').addEventListener('click', () => {
-  if (sizeIdx > 0) { sizeIdx--; document.documentElement.style.fontSize = sizes[sizeIdx]; localStorage.setItem(FONT_KEY, sizeIdx); }
+const slider = ctrl.querySelector('input');
+slider.addEventListener('input', () => {
+  sizeIdx = parseInt(slider.value);
+  localStorage.setItem(FONT_KEY, sizeIdx);
+  applySize();
 });
-document.getElementById('fz+').addEventListener('click', () => {
-  if (sizeIdx < sizes.length - 1) { sizeIdx++; document.documentElement.style.fontSize = sizes[sizeIdx]; localStorage.setItem(FONT_KEY, sizeIdx); }
-});
+applySize();

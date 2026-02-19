@@ -25,7 +25,12 @@
       "Bash(git -C \"D:/blog\" submodule update --remote na)",
       "Bash(git -C \"D:/blog\" add:*)",
       "Bash(git -C \"D:/blog\" commit -m \"update na submodule\")",
-      "Bash(git -C \"D:/math/NA\" commit -m \"add font size controls\")"
+      "Bash(git -C \"D:/math/NA\" commit -m \"add font size controls\")",
+      "Bash(git -C \"D:/blog\" commit -m \"add deploy_all.bat, sync na submodule\")",
+      "Bash(powershell -Command \":*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File:*)",
+      "Bash(git -C \"D:/math/NA\" commit -m \"font slider 7 levels\")",
+      "Bash(git -C \"D:/blog\" commit -m \"update na\")"
     ]
   }
 }
