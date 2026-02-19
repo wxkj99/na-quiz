@@ -25,6 +25,7 @@ body {
 
 @media (max-width: 600px) {
   body { padding: 0.5rem; }
+  input.blank { min-width: 0 !important; width: 100%; }
 }
 
 h1 { color: var(--accent); font-size: 1.6rem; margin-bottom: 0.3rem; }
