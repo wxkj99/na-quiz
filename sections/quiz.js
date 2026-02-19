@@ -31,21 +31,16 @@ document.addEventListener('click', e => {
 const FONT_KEY = 'fontSize';
 const sizes = ['0.75rem','0.85rem','0.95rem','1.05rem','1.18rem','1.32rem','1.5rem'];
 let sizeIdx = parseInt(localStorage.getItem(FONT_KEY) || '2');
-const applySize = () => {
-  document.documentElement.style.fontSize = sizes[sizeIdx];
-  ctrl.querySelector('span').textContent = sizes[sizeIdx];
-  slider.value = sizeIdx;
-};
 
 const ctrl = document.createElement('div');
 ctrl.className = 'font-controls';
-ctrl.innerHTML = 'A <input type="range" min="0" max="6" step="1"> <span></span>';
+ctrl.innerHTML = '<span class="fc-toggle">A</span><div class="fc-inner"><input type="range" min="0" max="6" step="1"><span></span></div>';
 document.body.appendChild(ctrl);
 
 const slider = ctrl.querySelector('input');
-slider.addEventListener('input', () => {
-  sizeIdx = parseInt(slider.value);
-  localStorage.setItem(FONT_KEY, sizeIdx);
-  applySize();
-});
+const label = ctrl.querySelector('.fc-inner span');
+const applySize = () => { document.documentElement.style.fontSize = sizes[sizeIdx]; label.textContent = sizes[sizeIdx]; slider.value = sizeIdx; };
+
+ctrl.querySelector('.fc-toggle').addEventListener('click', () => ctrl.classList.toggle('open'));
+slider.addEventListener('input', () => { sizeIdx = parseInt(slider.value); localStorage.setItem(FONT_KEY, sizeIdx); applySize(); });
 applySize();

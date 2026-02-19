@@ -34,7 +34,8 @@
       "Bash(git -C \"D:/math/NA\" commit -m \"widen layout, mobile padding\")",
       "Bash(git -C \"D:/math/NA\" commit -m \"max-width 1050px\")",
       "Bash(git -C \"D:/math/NA\" commit -m \"fix mobile blank input width\")",
-      "Bash(git -C \"D:/math/NA\" commit -m \"fix mobile overflow\")"
+      "Bash(git -C \"D:/math/NA\" commit -m \"fix mobile overflow\")",
+      "Bash(git -C \"D:/math/NA\" commit -m \"font controls hidden by default\")"
     ]
   }
 }

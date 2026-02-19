@@ -115,6 +115,9 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
   font-size: 0.78rem;
   color: var(--muted);
 }
+.font-controls .fc-toggle { cursor: pointer; user-select: none; color: var(--text); }
+.font-controls .fc-inner { display: none; align-items: center; gap: 0.5rem; }
+.font-controls.open .fc-inner { display: flex; }
 .font-controls span { min-width: 2.2rem; text-align: center; color: var(--text); }
 .font-controls input[type=range] { width: 90px; accent-color: var(--accent); cursor: pointer; }
 
