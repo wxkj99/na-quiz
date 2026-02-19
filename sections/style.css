@@ -94,6 +94,28 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
 .write-area.tall { min-height: 160px; }
 .write-area.xtall { min-height: 240px; }
 
+/* font size controls */
+.font-controls {
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 100;
+}
+.font-controls button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+.font-controls button:hover { border-color: var(--accent); color: var(--accent); }
+
 /* answer reveal */
 .answer-btn {
   margin-top: 0.7rem;

@@ -21,7 +21,11 @@
       "Bash(git -C \"D:/blog\" push)",
       "Bash(git -C \"D:/math/NA\" add .)",
       "Bash(git -C \"D:/math/NA\" commit -m \"add viewport meta to all pages\")",
-      "Bash(git -C \"D:/math/NA\" push)"
+      "Bash(git -C \"D:/math/NA\" push)",
+      "Bash(git -C \"D:/blog\" submodule update --remote na)",
+      "Bash(git -C \"D:/blog\" add:*)",
+      "Bash(git -C \"D:/blog\" commit -m \"update na submodule\")",
+      "Bash(git -C \"D:/math/NA\" commit -m \"add font size controls\")"
     ]
   }
 }

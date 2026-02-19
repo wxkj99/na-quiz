@@ -26,3 +26,21 @@ document.addEventListener('click', e => {
     e.target.textContent = visible ? '隐藏答案' : '显示答案';
   }
 });
+
+// Font size controls
+const FONT_KEY = 'fontSize';
+const sizes = ['0.85rem', '1rem', '1.15rem', '1.3rem'];
+let sizeIdx = parseInt(localStorage.getItem(FONT_KEY) || '1');
+document.documentElement.style.fontSize = sizes[sizeIdx];
+
+const ctrl = document.createElement('div');
+ctrl.className = 'font-controls';
+ctrl.innerHTML = '<button id="fz-">A-</button><button id="fz+">A+</button>';
+document.body.appendChild(ctrl);
+
+document.getElementById('fz-').addEventListener('click', () => {
+  if (sizeIdx > 0) { sizeIdx--; document.documentElement.style.fontSize = sizes[sizeIdx]; localStorage.setItem(FONT_KEY, sizeIdx); }
+});
+document.getElementById('fz+').addEventListener('click', () => {
+  if (sizeIdx < sizes.length - 1) { sizeIdx++; document.documentElement.style.fontSize = sizes[sizeIdx]; localStorage.setItem(FONT_KEY, sizeIdx); }
+});
