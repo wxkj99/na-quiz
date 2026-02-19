@@ -136,6 +136,33 @@
   </div>
 </div>
 
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">热方程显式格式（\(r=\tau/h^2\le1/2\)）满足离散最大值原理：若 \(u_j^0\ge0\) 且边界值 \(\ge0\)，则 \(u_j^n\ge0\) 对所有 \(n\ge0\)。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    显式格式：\(u_j^{n+1}=ru_{j+1}^n+(1-2r)u_j^n+ru_{j-1}^n\)。<br>
+    当 \(r\le1/2\) 时，所有系数 \(r\ge0\) 且 \(1-2r\ge0\)，系数之和为 1。<br>
+    故 \(u_j^{n+1}\) 是 \(u_{j-1}^n,u_j^n,u_{j+1}^n\) 的凸组合，若这三个值均 \(\ge0\)，则 \(u_j^{n+1}\ge0\)。由归纳法，若 \(u^n\ge0\)（含边界），则 \(u^{n+1}\ge0\)。
+  </div>
+</div>
+
+<div class="question">
+  <div class="question-header">
+    <span class="q-type type-proof">证明</span>
+    <span class="q-text">对 Poisson 方程 \(-\Delta u=f\ge0\) 的五点差分格式，利用最大值原理证明数值解的唯一性。</span>
+  </div>
+  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
+  <button class="answer-btn">显示答案</button>
+  <div class="answer">
+    设 \(U,V\) 均为数值解，令 \(W=U-V\)，则 \(W\) 满足齐次方程（\(f=0\)，边界值为 0）。<br>
+    由离散最大值原理，\(W\) 的最大值和最小值均在边界取到，而边界值为 0，故 \(W\equiv0\)，即 \(U=V\)。
+  </div>
+</div>
+
 <h2>8.4 能量方法</h2>
 
 <div class="question">
@@ -143,7 +170,7 @@
     <span class="q-type type-proof">分析</span>
     <span class="q-text">对流方程 Lax-Wendroff 格式：
     \[u_j^{n+1} = -\tfrac{1}{2}\nu(1-\nu)u_{j+1}^n + (1-\nu^2)u_j^n + \tfrac{1}{2}\nu(1+\nu)u_{j-1}^n\]
-    用能量方法证明：\(\|u^{n+1}\|_2^2 = \|u^n\|_2^2 - \tfrac{1}{2}\nu^2(1-\nu^2)(\|\delta_x^+u^n\|_2^2 - \langle\delta_x^+u^n,\delta_x^-u^n\rangle)\)。</span>
+    证明：\(\|u^{n+1}\|_2^2 = \|u^n\|_2^2 - \tfrac{1}{2}\nu^2(1-\nu^2)(\|\delta_x^+u^n\|_2^2 - \langle\delta_x^+u^n,\delta_x^-u^n\rangle)\)。</span>
   </div>
   <textarea class="write-area xtall" placeholder="在此写出证明..."></textarea>
   <button class="answer-btn">显示答案</button>
@@ -195,7 +222,7 @@
 <div class="question">
   <div class="question-header">
     <span class="q-type type-proof">分析</span>
-    <span class="q-text">对耦合系统（QE24A 原题）\(u_t=v_x,\,v_t=u_x\) 的格式：
+    <span class="q-text">（QE24A 原题）对耦合系统 \(u_t=v_x,\,v_t=u_x\) 的格式：
     \[\frac{u_j^{n+1}-\frac{1}{2}(u_{j+1}^n+u_{j-1}^n)}{\tau}=\frac{v_{j+1}^n-v_{j-1}^n}{2h},\quad \frac{v_j^{n+1}-\frac{1}{2}(v_{j+1}^n+v_{j-1}^n)}{\tau}=\frac{u_{j+1}^n-u_{j-1}^n}{2h}\]
     分析截断误差和稳定性。</span>
   </div>
@@ -227,37 +254,6 @@
     增长矩阵特征值满足 \(|\lambda|=1\)（反斜对称结构），故<b>无条件稳定</b>。
   </div>
 </div>
-
-<h2>8.6 最大值原理补充</h2>
-
-<div class="question">
-  <div class="question-header">
-    <span class="q-type type-proof">证明</span>
-    <span class="q-text">热方程显式格式（\(r=\tau/h^2\le1/2\)）满足离散最大值原理：若 \(u_j^0\ge0\) 且边界值 \(\ge0\)，则 \(u_j^n\ge0\) 对所有 \(n\ge0\)。</span>
-  </div>
-  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
-  <button class="answer-btn">显示答案</button>
-  <div class="answer">
-    显式格式：\(u_j^{n+1}=ru_{j+1}^n+(1-2r)u_j^n+ru_{j-1}^n\)。<br>
-    当 \(r\le1/2\) 时，所有系数 \(r\ge0\) 且 \(1-2r\ge0\)，系数之和为 1。<br>
-    故 \(u_j^{n+1}\) 是 \(u_{j-1}^n,u_j^n,u_{j+1}^n\) 的凸组合，若这三个值均 \(\ge0\)，则 \(u_j^{n+1}\ge0\)。由归纳法，若 \(u^n\ge0\)（含边界），则 \(u^{n+1}\ge0\)。
-  </div>
-</div>
-
-<div class="question">
-  <div class="question-header">
-    <span class="q-type type-proof">证明</span>
-    <span class="q-text">对 Poisson 方程 \(-\Delta u=f\ge0\) 的五点差分格式，利用最大值原理证明数值解的唯一性。</span>
-  </div>
-  <textarea class="write-area tall" placeholder="在此写出证明..."></textarea>
-  <button class="answer-btn">显示答案</button>
-  <div class="answer">
-    设 \(U,V\) 均为数值解，令 \(W=U-V\)，则 \(W\) 满足齐次方程（\(f=0\)，边界值为 0）。<br>
-    由离散最大值原理，\(W\) 的最大值和最小值均在边界取到，而边界值为 0，故 \(W\equiv0\)，即 \(U=V\)。
-  </div>
-</div>
-
-<h2>8.7 能量方法补充</h2>
 
 <div class="question">
   <div class="question-header">
