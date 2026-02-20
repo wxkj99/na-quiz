@@ -1,6 +1,6 @@
 // Auto-number questions: derive chapter prefix from filename
 const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
-const VERSION = '1ed92cf';
+const VERSION = '2026-02-20';
 
 // AI grading config
 const WORKER_URL = 'https://blog-proxy.yangjt22.workers.dev';
@@ -172,12 +172,9 @@ const ctrl = document.createElement('div');
 ctrl.className = 'font-controls';
 ctrl.innerHTML = `<span class="fc-toggle">⚙</span><div class="fc-inner">
   <label>字号</label><input type="range" min="0" max="6" step="1"><span class="fc-size"></span>
-  <label>主题</label><button class="fc-theme">🌙</button><span class="fc-ver" title="git commit">${VERSION}</span>
+  <label>主题</label><button class="fc-theme">🌙</button><span class="fc-ver">${VERSION}</span>
   <div class="fc-sep"></div>
-  <label>接入点</label><input class="fc-api-url" type="text" placeholder="https://api.xxx.com/v1">
-  <label>API Key</label><input class="fc-api-key" type="password" placeholder="sk-...">
-  <label>模型</label><input class="fc-api-model" type="text" placeholder="${AI_MODEL}">
-  <button class="fc-api-test">测试</button><span class="fc-api-status"></span>
+  <button class="fc-api-open">配置 API</button>
 </div>`;
 document.body.appendChild(ctrl);
 
@@ -195,11 +192,22 @@ slider.addEventListener('input', () => { sizeIdx = parseInt(slider.value); local
 applySize();
 applyTheme();
 
-// User API config persistence
-const apiUrlEl = ctrl.querySelector('.fc-api-url');
-const apiKeyEl = ctrl.querySelector('.fc-api-key');
-const apiModelEl = ctrl.querySelector('.fc-api-model');
-const apiStatus = ctrl.querySelector('.fc-api-status');
+// User API config modal
+const apiModal = document.createElement('div');
+apiModal.className = 'api-modal';
+apiModal.innerHTML = `<div class="api-modal-box">
+  <h3>自定义 API 配置</h3>
+  <label>接入点</label><input class="fc-api-url" type="text" placeholder="https://api.xxx.com/v1">
+  <label>API Key</label><input class="fc-api-key" type="password" placeholder="sk-...">
+  <label>模型</label><input class="fc-api-model" type="text" placeholder="${AI_MODEL}">
+  <div class="api-modal-row"><button class="fc-api-test">测试</button><span class="fc-api-status"></span><button class="fc-api-close" style="margin-left:auto">关闭</button></div>
+</div>`;
+document.body.appendChild(apiModal);
+
+const apiUrlEl = apiModal.querySelector('.fc-api-url');
+const apiKeyEl = apiModal.querySelector('.fc-api-key');
+const apiModelEl = apiModal.querySelector('.fc-api-model');
+const apiStatus = apiModal.querySelector('.fc-api-status');
 apiUrlEl.value = localStorage.getItem('user-api-url') || '';
 apiKeyEl.value = localStorage.getItem('user-api-key') || '';
 apiModelEl.value = localStorage.getItem('user-api-model') || '';
@@ -207,7 +215,11 @@ apiModelEl.value = localStorage.getItem('user-api-model') || '';
   el.addEventListener('input', () => localStorage.setItem(k, el.value.trim()))
 );
 
-ctrl.querySelector('.fc-api-test').addEventListener('click', async () => {
+ctrl.querySelector('.fc-api-open').addEventListener('click', () => apiModal.classList.add('open'));
+apiModal.querySelector('.fc-api-close').addEventListener('click', () => apiModal.classList.remove('open'));
+apiModal.addEventListener('click', e => { if (e.target === apiModal) apiModal.classList.remove('open'); });
+
+apiModal.querySelector('.fc-api-test').addEventListener('click', async () => {
   const url = apiUrlEl.value.trim();
   const key = apiKeyEl.value.trim();
   const model = apiModelEl.value.trim() || AI_MODEL;

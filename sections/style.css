@@ -133,12 +133,21 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
 .font-controls.open .fc-inner { display: flex; }
 .font-controls label { color: var(--muted); white-space: nowrap; }
 .font-controls .fc-sep { width: 100%; border-top: 1px solid var(--border); margin: 0.2rem 0; }
-.font-controls .fc-api-url,
-.font-controls .fc-api-key,
-.font-controls .fc-api-model { flex: 1; min-width: 0; background: var(--blank-bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); padding: 0.15rem 0.4rem; font-size: 0.78rem; }
-.font-controls .fc-api-test { background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); padding: 0.15rem 0.5rem; cursor: pointer; font-size: 0.78rem; white-space: nowrap; }
-.font-controls .fc-api-test:hover { border-color: var(--accent); color: var(--accent); }
-.font-controls .fc-api-status { font-size: 0.75rem; white-space: nowrap; }
+.font-controls .fc-api-open { background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); padding: 0.15rem 0.5rem; cursor: pointer; font-size: 0.78rem; }
+.font-controls .fc-api-open:hover { border-color: var(--accent); color: var(--accent); }
+
+/* API config modal */
+.api-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+.api-modal.open { display: flex; }
+.api-modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.5rem; width: min(420px, 90vw); display: flex; flex-direction: column; gap: 0.5rem; }
+.api-modal-box h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.2rem; }
+.api-modal-box label { font-size: 0.8rem; color: var(--muted); }
+.api-modal-box input { background: var(--blank-bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); padding: 0.4rem 0.6rem; font-size: 0.88rem; width: 100%; }
+.api-modal-box input:focus { outline: none; border-color: var(--accent); }
+.api-modal-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.3rem; }
+.api-modal-row button { background: none; border: 1px solid var(--border); border-radius: 5px; color: var(--muted); padding: 0.3rem 0.8rem; cursor: pointer; font-size: 0.82rem; }
+.api-modal-row button:hover { border-color: var(--accent); color: var(--accent); }
+.api-modal-row .fc-api-status { font-size: 0.82rem; }
 .font-controls .fc-size { min-width: 2.2rem; text-align: center; color: var(--text); }
 .font-controls input[type=range] { width: 90px; accent-color: var(--accent); cursor: pointer; }
 .font-controls .fc-theme { background: none; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; padding: 0.1rem 0.4rem; font-size: 0.85rem; }
