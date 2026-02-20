@@ -1,6 +1,6 @@
 // Auto-number questions: derive chapter prefix from filename
 const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
-const VERSION = 'bd61e3c';
+const VERSION = '10c8e77';
 
 // AI grading config — update these after deploying your Cloudflare Worker
 const WORKER_URL = 'https://blog-proxy.yangjt22.workers.dev';
