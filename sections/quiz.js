@@ -1,12 +1,10 @@
-// Auto-number questions: derive chapter prefix from filename
+// Auto-number questions
 const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
-const VERSION = '2026-02-20 18:00';
+const VERSION = '2026-02-20';
 
 // AI grading config
 const WORKER_URL = 'https://blog-proxy.yangjt22.workers.dev';
 const AI_MODEL = 'glm-4.5-air:free';
-const RATE_KEY = 'grade-rate';
-const RATE_LIMIT = 10;
 const RATE_WINDOW = 60000;
 
 function clearGradeCache() {
@@ -17,26 +15,17 @@ function getApiConfig() {
   const url = localStorage.getItem('user-api-url');
   const key = localStorage.getItem('user-api-key');
   const model = localStorage.getItem('user-api-model');
-  if (url && key) return { url: url.replace(/\/$/, '') + '/chat/completions', key, model: model || AI_MODEL, custom: true };
-  return { url: WORKER_URL, key: null, model: AI_MODEL, custom: false };
+  if (url && key) return { url: url.replace(/\/$/, '') + '/chat/completions', key, model: model || AI_MODEL };
+  return { url: WORKER_URL, key: null, model: AI_MODEL };
 }
 
-function checkClientRate() {
+function checkRate(storageKey, limit) {
   const now = Date.now();
-  const r = JSON.parse(localStorage.getItem(RATE_KEY) || '{"count":0,"start":0}');
+  const r = JSON.parse(localStorage.getItem(storageKey) || '{"count":0,"start":0}');
   if (now - r.start > RATE_WINDOW) { r.count = 0; r.start = now; }
   r.count++;
-  localStorage.setItem(RATE_KEY, JSON.stringify(r));
-  return r.count <= RATE_LIMIT;
-}
-
-function checkTestRate() {
-  const now = Date.now();
-  const r = JSON.parse(localStorage.getItem('test-rate') || '{"count":0,"start":0}');
-  if (now - r.start > RATE_WINDOW) { r.count = 0; r.start = now; }
-  r.count++;
-  localStorage.setItem('test-rate', JSON.stringify(r));
-  return r.count <= 5;
+  localStorage.setItem(storageKey, JSON.stringify(r));
+  return r.count <= limit;
 }
 
 function cacheKey(id, inputs) { return 'grade:' + id + ':' + inputs.join('|'); }
@@ -64,78 +53,81 @@ function showResult(el, text) {
   el.style.display = 'block';
 }
 
+const gradingIds = new Set();
+
 async function gradeQuestions(qEls, summaryEl) {
-  const allData = qEls.map(q => {
-    const id = q.dataset.gradeId;
-    const data = getQuestionData(q);
-    const key = cacheKey(id, data.inputs);
-    return { q, data, id, key, cached: localStorage.getItem(key) };
-  });
-
-  // Show cached results on per-question elements
-  allData.filter(d => d.cached && d.data.inputs.some(v => v)).forEach(({ q, cached }) => {
-    const el = q.querySelector('.grade-result');
-    if (el) showResult(el, cached);
-  });
-
-  const needGrade = allData.filter(d => !d.cached && d.data.inputs.some(v => v));
-
-  if (needGrade.length === 0) {
-    if (summaryEl && !allData.some(d => d.data.inputs.some(v => v))) {
-      summaryEl.textContent = '请先填写答案再批改。'; summaryEl.style.display = 'block';
-    }
+  const ids = qEls.map(q => q.dataset.gradeId);
+  if (ids.some(id => gradingIds.has(id))) {
+    if (summaryEl) { summaryEl.textContent = '有题目正在批改中，请稍候。'; summaryEl.className = 'grade-result error'; summaryEl.style.display = 'block'; }
     return;
   }
+  ids.forEach(id => gradingIds.add(id));
+  try {
+    const allData = qEls.map(q => {
+      const id = q.dataset.gradeId;
+      const data = getQuestionData(q);
+      const key = cacheKey(id, data.inputs);
+      return { q, data, id, key, cached: localStorage.getItem(key) };
+    });
 
-  if (!checkClientRate()) {
-    if (summaryEl) { summaryEl.textContent = '请求过于频繁，请稍后再试。'; summaryEl.className = 'grade-result error'; summaryEl.style.display = 'block'; }
-    return;
-  }
+    allData.filter(d => d.cached && d.data.inputs.some(v => v)).forEach(({ q, cached }) => {
+      const el = q.querySelector('.grade-result');
+      if (el) showResult(el, cached);
+    });
 
-  if (summaryEl) { summaryEl.textContent = '批改中…'; summaryEl.style.display = 'block'; }
+    const needGrade = allData.filter(d => !d.cached && d.data.inputs.some(v => v));
 
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    if (attempt > 1 && summaryEl) summaryEl.textContent = `批改中… (第${attempt}次，等待${attempt * 3}s)`;
-    if (attempt > 1) await new Promise(r => setTimeout(r, attempt * 3000));
-    try {
-      const cfg = getApiConfig();
-      const headers = { 'Content-Type': 'application/json' };
-      if (cfg.key) headers['Authorization'] = `Bearer ${cfg.key}`;
-      const resp = await fetch(cfg.url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ model: cfg.model, messages: [{ role: 'user', content: buildPrompt(needGrade.map(d => d.data)) }] })
-      });
-      if ((resp.status === 504 || resp.status === 429) && attempt < 3) continue;
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      const text = (await resp.json()).choices?.[0]?.message?.content || '无返回内容';
-
-      if (needGrade.length === 1) {
-        localStorage.setItem(needGrade[0].key, text);
-        const target = summaryEl || needGrade[0].q.querySelector('.grade-result');
-        showResult(target, text);
-      } else {
-        // Parse by ===题N=== markers
-        const parsed = {};
-        text.split(/===题(\d+)===/).forEach((seg, i, arr) => {
-          if (i % 2 === 1) parsed[parseInt(arr[i])] = (arr[i+1] || '').trim();
-        });
-        const parseOk = needGrade.every((_, i) => parsed[i+1]);
-        needGrade.forEach(({ q, key }, i) => {
-          const part = parseOk ? parsed[i+1] : null;
-          if (part) {
-            localStorage.setItem(key, part);
-            const el = q.querySelector('.grade-result');
-            if (el) showResult(el, part);
-          }
-        });
-        // On parse failure, show full text in summary only
-        if (summaryEl) { if (parseOk) summaryEl.style.display = 'none'; else showResult(summaryEl, text); }
+    if (needGrade.length === 0) {
+      if (summaryEl && !allData.some(d => d.data.inputs.some(v => v))) {
+        summaryEl.textContent = '请先填写答案再批改。'; summaryEl.style.display = 'block';
       }
       return;
-    } catch (e) {
-      if (attempt === 3 && summaryEl) { summaryEl.textContent = '批改失败：' + e.message; summaryEl.className = 'grade-result error'; }
     }
+
+    if (!checkRate('grade-rate', 5)) {
+      if (summaryEl) { summaryEl.textContent = '请求过于频繁，请稍后再试。'; summaryEl.className = 'grade-result error'; summaryEl.style.display = 'block'; }
+      return;
+    }
+
+    if (summaryEl) { summaryEl.textContent = '批改中…'; summaryEl.style.display = 'block'; }
+
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      if (attempt > 1 && summaryEl) summaryEl.textContent = `批改中… (第${attempt}次，等待${attempt * 3}s)`;
+      if (attempt > 1) await new Promise(r => setTimeout(r, attempt * 3000));
+      try {
+        const cfg = getApiConfig();
+        const headers = { 'Content-Type': 'application/json' };
+        if (cfg.key) headers['Authorization'] = `Bearer ${cfg.key}`;
+        const resp = await fetch(cfg.url, {
+          method: 'POST', headers,
+          body: JSON.stringify({ model: cfg.model, messages: [{ role: 'user', content: buildPrompt(needGrade.map(d => d.data)) }] })
+        });
+        if ((resp.status === 504 || resp.status === 429) && attempt < 3) continue;
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const text = (await resp.json()).choices?.[0]?.message?.content || '无返回内容';
+
+        if (needGrade.length === 1) {
+          localStorage.setItem(needGrade[0].key, text);
+          showResult(summaryEl || needGrade[0].q.querySelector('.grade-result'), text);
+        } else {
+          const parsed = {};
+          text.split(/===题(\d+)===/).forEach((seg, i, arr) => {
+            if (i % 2 === 1) parsed[parseInt(arr[i])] = (arr[i+1] || '').trim();
+          });
+          const parseOk = needGrade.every((_, i) => parsed[i+1]);
+          needGrade.forEach(({ q, key }, i) => {
+            const part = parseOk ? parsed[i+1] : null;
+            if (part) { localStorage.setItem(key, part); const el = q.querySelector('.grade-result'); if (el) showResult(el, part); }
+          });
+          if (summaryEl) { if (parseOk) summaryEl.style.display = 'none'; else showResult(summaryEl, text); }
+        }
+        return;
+      } catch (e) {
+        if (attempt === 3 && summaryEl) { summaryEl.textContent = '批改失败：' + e.message; summaryEl.className = 'grade-result error'; }
+      }
+    }
+  } finally {
+    ids.forEach(id => gradingIds.delete(id));
   }
 }
 
@@ -162,7 +154,6 @@ document.querySelectorAll('.question').forEach((q, i) => {
   resultEl.className = 'grade-result';
   resultEl.style.display = 'none';
 
-  // Restore cached result on load
   const data = getQuestionData(q);
   const cached = localStorage.getItem(cacheKey(id, data.inputs));
   if (cached && data.inputs.some(v => v)) showResult(resultEl, cached);
@@ -177,7 +168,6 @@ document.querySelectorAll('.question').forEach((q, i) => {
   btn.insertAdjacentElement('afterend', resultEl);
 });
 
-// Toggle answer visibility
 document.addEventListener('click', e => {
   if (e.target.classList.contains('answer-btn')) {
     const ans = e.target.closest('.question').querySelector('.answer');
@@ -216,7 +206,7 @@ slider.addEventListener('input', () => { sizeIdx = parseInt(slider.value); local
 applySize();
 applyTheme();
 
-// User API config modal
+// API config modal — no click-outside-to-close
 const apiModal = document.createElement('div');
 apiModal.className = 'api-modal';
 apiModal.innerHTML = `<div class="api-modal-box">
@@ -224,7 +214,7 @@ apiModal.innerHTML = `<div class="api-modal-box">
   <label>接入点</label><input class="fc-api-url" type="text" placeholder="https://api.xxx.com/v1">
   <label>API Key</label><input class="fc-api-key" type="password" placeholder="sk-...">
   <label>模型</label><input class="fc-api-model" type="text" placeholder="${AI_MODEL}">
-  <div class="api-modal-row"><button class="fc-api-test">测试</button><span class="fc-api-status"></span><button class="fc-api-close" style="margin-left:auto">关闭</button></div>
+  <div class="api-modal-row"><button class="fc-api-test">测试</button><span class="fc-api-status"></span><button class="fc-api-close">关闭</button></div>
 </div>`;
 document.body.appendChild(apiModal);
 
@@ -245,14 +235,13 @@ apiModelEl.value = localStorage.getItem('user-api-model') || '';
 
 ctrl.querySelector('.fc-api-open').addEventListener('click', () => apiModal.classList.add('open'));
 apiModal.querySelector('.fc-api-close').addEventListener('click', () => apiModal.classList.remove('open'));
-apiModal.addEventListener('click', e => { if (e.target === apiModal) apiModal.classList.remove('open'); });
 
 apiModal.querySelector('.fc-api-test').addEventListener('click', async () => {
   const url = apiUrlEl.value.trim();
   const key = apiKeyEl.value.trim();
   const model = apiModelEl.value.trim() || AI_MODEL;
   if (!url || !key) { apiStatus.textContent = '请填写接入点和 Key'; apiStatus.style.color = 'var(--red)'; return; }
-  if (!checkTestRate()) { apiStatus.textContent = '测试过于频繁，请稍后再试。'; apiStatus.style.color = 'var(--red)'; return; }
+  if (!checkRate('test-rate', 5)) { apiStatus.textContent = '测试过于频繁，请稍后再试。'; apiStatus.style.color = 'var(--red)'; return; }
   apiStatus.textContent = '测试中…'; apiStatus.style.color = 'var(--muted)';
   try {
     const resp = await fetch(url.replace(/\/$/, '') + '/chat/completions', {

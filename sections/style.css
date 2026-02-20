@@ -139,7 +139,7 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
 /* API config modal */
 .api-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
 .api-modal.open { display: flex; }
-.api-modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.5rem; width: min(420px, 90vw); display: flex; flex-direction: column; gap: 0.5rem; }
+.api-modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.5rem; width: min(560px, 92vw); display: flex; flex-direction: column; gap: 0.5rem; }
 .api-modal-box h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.2rem; }
 .api-modal-box label { font-size: 0.8rem; color: var(--muted); }
 .api-modal-box input { background: var(--blank-bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); padding: 0.4rem 0.6rem; font-size: 0.88rem; width: 100%; }
