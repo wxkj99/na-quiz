@@ -200,6 +200,7 @@ async function gradeQuestions(qEls, summaryEl, force = false) {
           const result = text.replace(/^===题\d+===\s*/, '').trim();
           localStorage.setItem(needGrade[0].key, result);
           localStorage.setItem('naq:snap:' + needGrade[0].id, needGrade[0].data.inputs.join('|'));
+          updateEditedMark(needGrade[0].q, needGrade[0].id);
           const targetEl = needGrade[0].q.querySelector('.grade-result') || summaryEl;
           showResult(targetEl, result);
           if (summaryEl && targetEl !== summaryEl) summaryEl.style.display = 'none';
@@ -213,6 +214,7 @@ async function gradeQuestions(qEls, summaryEl, force = false) {
             const part = parseOk ? parsed[i+1] : text;
             localStorage.setItem(key, part);
             localStorage.setItem('naq:snap:' + id, data.inputs.join('|'));
+            updateEditedMark(q, id);
             const el = q.querySelector('.grade-result');
             if (el) showResult(el, part);
           });
