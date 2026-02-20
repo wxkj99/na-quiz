@@ -146,6 +146,36 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
 }
 .answer.visible { display: block; }
 
+/* AI grading */
+.grade-btn {
+  margin-top: 0.7rem;
+  margin-left: 0.4rem;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.3rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all 0.15s;
+}
+.grade-btn:hover { border-color: var(--green); color: var(--green); }
+.grade-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.grade-btn.section-grade { display: block; margin: 0.5rem 0 0.5rem auto; }
+.grade-btn.page-grade { display: block; margin: 2rem auto 1rem; padding: 0.5rem 2rem; font-size: 0.95rem; }
+
+.grade-result {
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  background: #1a1a2e;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.88rem;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.grade-result.error { border-left-color: var(--red); color: var(--red); }
+
 /* print */
 @media print {
   body { background: white; color: black; padding: 1rem; }
