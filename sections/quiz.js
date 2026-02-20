@@ -9,6 +9,10 @@ const RATE_KEY = 'grade-rate';
 const RATE_LIMIT = 10;
 const RATE_WINDOW = 60000;
 
+function clearGradeCache() {
+  Object.keys(localStorage).filter(k => k.startsWith('grade:')).forEach(k => localStorage.removeItem(k));
+}
+
 function getApiConfig() {
   const url = localStorage.getItem('user-api-url');
   const key = localStorage.getItem('user-api-key');
@@ -37,9 +41,9 @@ function getQuestionData(q) {
 
 function buildPrompt(questions) {
   const items = questions.map(({ qtext, answer, inputs }, i) =>
-    `【第${i+1}题】\n题目：${qtext}\n学生答案：${inputs.join(' | ')}\n参考答案：${answer}`
+    `===题${i+1}===\n题目：${qtext}\n学生答案：${inputs.join(' | ')}\n参考答案：${answer}`
   ).join('\n\n');
-  return `批改数值分析题目。数学含义正确即为正确，忽略符号细节。每题仅输出一行：【✓】【△】【✗】加最多10字点评，无需解释。\n\n${items}`;
+  return `你是数值分析老师，正在批改作业。对每题输出一行，必须以 ===题N=== 开头（N为题号），然后给出批改：正确给【✓】（若有值得补充的要点可加一句，否则只输出【✓】）；部分正确给【△】并指出缺失点；错误给【✗】并直接给出正确思路。数学含义正确即为正确，忽略符号写法差异。\n\n${items}`;
 }
 
 function showResult(el, text) {
@@ -68,7 +72,9 @@ async function gradeQuestions(qEls, summaryEl) {
   const needGrade = allData.filter(d => !d.cached && d.data.inputs.some(v => v));
 
   if (needGrade.length === 0) {
-    if (summaryEl) { summaryEl.textContent = allData.some(d => d.data.inputs.some(v => v)) ? '所有题目均已有批改结果。' : '请先填写答案再批改。'; summaryEl.style.display = 'block'; }
+    if (summaryEl && !allData.some(d => d.data.inputs.some(v => v))) {
+      summaryEl.textContent = '请先填写答案再批改。'; summaryEl.style.display = 'block';
+    }
     return;
   }
 
@@ -100,14 +106,22 @@ async function gradeQuestions(qEls, summaryEl) {
         const target = summaryEl || needGrade[0].q.querySelector('.grade-result');
         showResult(target, text);
       } else {
-        const parts = text.split(/(?=【第\d+题】)/);
-        needGrade.forEach(({ q, key }, i) => {
-          const part = (parts[i] || '').trim() || text;
-          localStorage.setItem(key, part);
-          const el = q.querySelector('.grade-result');
-          if (el) showResult(el, part);
+        // Parse by ===题N=== markers
+        const parsed = {};
+        text.split(/===题(\d+)===/).forEach((seg, i, arr) => {
+          if (i % 2 === 1) parsed[parseInt(arr[i])] = (arr[i+1] || '').trim();
         });
-        if (summaryEl) showResult(summaryEl, text);
+        const parseOk = needGrade.every((_, i) => parsed[i+1]);
+        needGrade.forEach(({ q, key }, i) => {
+          const part = parseOk ? parsed[i+1] : null;
+          if (part) {
+            localStorage.setItem(key, part);
+            const el = q.querySelector('.grade-result');
+            if (el) showResult(el, part);
+          }
+        });
+        // On parse failure, show full text in summary only
+        if (summaryEl) { if (parseOk) summaryEl.style.display = 'none'; else showResult(summaryEl, text); }
       }
       return;
     } catch (e) {
@@ -213,7 +227,11 @@ apiUrlEl.value = localStorage.getItem('user-api-url') || '';
 apiKeyEl.value = localStorage.getItem('user-api-key') || '';
 apiModelEl.value = localStorage.getItem('user-api-model') || '';
 [['user-api-url', apiUrlEl], ['user-api-key', apiKeyEl], ['user-api-model', apiModelEl]].forEach(([k, el]) =>
-  el.addEventListener('input', () => localStorage.setItem(k, el.value.trim()))
+  el.addEventListener('input', () => {
+    localStorage.setItem(k, el.value.trim());
+    clearGradeCache();
+    apiStatus.textContent = '配置已更新，批改缓存已清除。'; apiStatus.style.color = 'var(--muted)';
+  })
 );
 
 ctrl.querySelector('.fc-api-open').addEventListener('click', () => apiModal.classList.add('open'));
