@@ -1,6 +1,6 @@
 // Auto-number questions: derive chapter prefix from filename
 const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
-const VERSION = '43fce6a';
+const VERSION = 'd8a0eb7';
 
 // AI grading config — update these after deploying your Cloudflare Worker
 const WORKER_URL = 'https://blog-proxy.yangjt22.workers.dev';
@@ -49,26 +49,33 @@ async function gradeQuestions(questions, resultEl) {
   resultEl.textContent = '批改中…';
   resultEl.className = 'grade-result';
 
-  try {
-    const resp = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: AI_MODEL,
-        messages: [{ role: 'user', content: buildPrompt(questions) }]
-      })
-    });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-    const text = data.choices?.[0]?.message?.content || '无返回内容';
-    resultEl.textContent = text;
-    resultEl.className = 'grade-result' + (
-      /✓/.test(text) && !/✗|△/.test(text) ? ' correct' :
-      /✗/.test(text) && !/✓|△/.test(text) ? ' wrong' : ''
-    );
-  } catch (e) {
-    resultEl.textContent = '批改失败：' + e.message;
-    resultEl.className = 'grade-result error';
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      resultEl.textContent = attempt > 1 ? `批改中… (第${attempt}次)` : '批改中…';
+      const resp = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: AI_MODEL,
+          messages: [{ role: 'user', content: buildPrompt(questions) }]
+        })
+      });
+      if (resp.status === 504 && attempt < 3) continue;
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      const text = data.choices?.[0]?.message?.content || '无返回内容';
+      resultEl.textContent = text;
+      resultEl.className = 'grade-result' + (
+        /✓/.test(text) && !/✗|△/.test(text) ? ' correct' :
+        /✗/.test(text) && !/✓|△/.test(text) ? ' wrong' : ''
+      );
+      return;
+    } catch (e) {
+      if (attempt === 3) {
+        resultEl.textContent = '批改失败：' + e.message;
+        resultEl.className = 'grade-result error';
+      }
+    }
   }
 }
 
