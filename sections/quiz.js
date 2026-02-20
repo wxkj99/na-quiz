@@ -1,6 +1,6 @@
 // Auto-number questions: derive chapter prefix from filename
 const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
-const VERSION = '24a4c15';
+const VERSION = '1ed92cf';
 
 // AI grading config
 const WORKER_URL = 'https://blog-proxy.yangjt22.workers.dev';
@@ -8,6 +8,14 @@ const AI_MODEL = 'glm-4.5-air:free';
 const RATE_KEY = 'grade-rate';
 const RATE_LIMIT = 10;
 const RATE_WINDOW = 60000;
+
+function getApiConfig() {
+  const url = localStorage.getItem('user-api-url');
+  const key = localStorage.getItem('user-api-key');
+  const model = localStorage.getItem('user-api-model');
+  if (url && key) return { url: url.replace(/\/$/, '') + '/chat/completions', key, model: model || AI_MODEL, custom: true };
+  return { url: WORKER_URL, key: null, model: AI_MODEL, custom: false };
+}
 
 function checkClientRate() {
   const now = Date.now();
@@ -74,10 +82,13 @@ async function gradeQuestions(qEls, summaryEl) {
   for (let attempt = 1; attempt <= 3; attempt++) {
     if (attempt > 1 && summaryEl) summaryEl.textContent = `批改中… (第${attempt}次)`;
     try {
-      const resp = await fetch(WORKER_URL, {
+      const cfg = getApiConfig();
+      const headers = { 'Content-Type': 'application/json' };
+      if (cfg.key) headers['Authorization'] = `Bearer ${cfg.key}`;
+      const resp = await fetch(cfg.url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: AI_MODEL, messages: [{ role: 'user', content: buildPrompt(needGrade.map(d => d.data)) }] })
+        headers,
+        body: JSON.stringify({ model: cfg.model, messages: [{ role: 'user', content: buildPrompt(needGrade.map(d => d.data)) }] })
       });
       if (resp.status === 504 && attempt < 3) continue;
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -159,7 +170,15 @@ let sizeIdx = parseInt(localStorage.getItem(FONT_KEY) || '2');
 
 const ctrl = document.createElement('div');
 ctrl.className = 'font-controls';
-ctrl.innerHTML = `<span class="fc-toggle">⚙</span><div class="fc-inner"><label>字号</label><input type="range" min="0" max="6" step="1"><span class="fc-size"></span><label>主题</label><button class="fc-theme">🌙</button><span class="fc-ver" title="git commit">${VERSION}</span></div>`;
+ctrl.innerHTML = `<span class="fc-toggle">⚙</span><div class="fc-inner">
+  <label>字号</label><input type="range" min="0" max="6" step="1"><span class="fc-size"></span>
+  <label>主题</label><button class="fc-theme">🌙</button><span class="fc-ver" title="git commit">${VERSION}</span>
+  <div class="fc-sep"></div>
+  <label>接入点</label><input class="fc-api-url" type="text" placeholder="https://api.xxx.com/v1">
+  <label>API Key</label><input class="fc-api-key" type="password" placeholder="sk-...">
+  <label>模型</label><input class="fc-api-model" type="text" placeholder="${AI_MODEL}">
+  <button class="fc-api-test">测试</button><span class="fc-api-status"></span>
+</div>`;
 document.body.appendChild(ctrl);
 
 const slider = ctrl.querySelector('input[type=range]');
@@ -175,6 +194,38 @@ ctrl.querySelector('.fc-toggle').addEventListener('click', () => ctrl.classList.
 slider.addEventListener('input', () => { sizeIdx = parseInt(slider.value); localStorage.setItem(FONT_KEY, sizeIdx); applySize(); });
 applySize();
 applyTheme();
+
+// User API config persistence
+const apiUrlEl = ctrl.querySelector('.fc-api-url');
+const apiKeyEl = ctrl.querySelector('.fc-api-key');
+const apiModelEl = ctrl.querySelector('.fc-api-model');
+const apiStatus = ctrl.querySelector('.fc-api-status');
+apiUrlEl.value = localStorage.getItem('user-api-url') || '';
+apiKeyEl.value = localStorage.getItem('user-api-key') || '';
+apiModelEl.value = localStorage.getItem('user-api-model') || '';
+[['user-api-url', apiUrlEl], ['user-api-key', apiKeyEl], ['user-api-model', apiModelEl]].forEach(([k, el]) =>
+  el.addEventListener('input', () => localStorage.setItem(k, el.value.trim()))
+);
+
+ctrl.querySelector('.fc-api-test').addEventListener('click', async () => {
+  const url = apiUrlEl.value.trim();
+  const key = apiKeyEl.value.trim();
+  const model = apiModelEl.value.trim() || AI_MODEL;
+  if (!url || !key) { apiStatus.textContent = '请填写接入点和 Key'; apiStatus.style.color = 'var(--red)'; return; }
+  apiStatus.textContent = '测试中…'; apiStatus.style.color = 'var(--muted)';
+  try {
+    const resp = await fetch(url.replace(/\/$/, '') + '/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify({ model, messages: [{ role: 'user', content: 'hi' }], max_tokens: 5 })
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    await resp.json();
+    apiStatus.textContent = '✓ 连接成功'; apiStatus.style.color = 'var(--green)';
+  } catch (e) {
+    apiStatus.textContent = '✗ ' + e.message; apiStatus.style.color = 'var(--red)';
+  }
+});
 
 // Section-level grade buttons
 function makeSectionGradeBtn(qEls) {
