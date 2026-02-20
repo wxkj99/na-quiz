@@ -80,7 +80,8 @@ async function gradeQuestions(qEls, summaryEl) {
   if (summaryEl) { summaryEl.textContent = '批改中…'; summaryEl.style.display = 'block'; }
 
   for (let attempt = 1; attempt <= 3; attempt++) {
-    if (attempt > 1 && summaryEl) summaryEl.textContent = `批改中… (第${attempt}次)`;
+    if (attempt > 1 && summaryEl) summaryEl.textContent = `批改中… (第${attempt}次，等待${attempt * 3}s)`;
+    if (attempt > 1) await new Promise(r => setTimeout(r, attempt * 3000));
     try {
       const cfg = getApiConfig();
       const headers = { 'Content-Type': 'application/json' };
@@ -90,7 +91,7 @@ async function gradeQuestions(qEls, summaryEl) {
         headers,
         body: JSON.stringify({ model: cfg.model, messages: [{ role: 'user', content: buildPrompt(needGrade.map(d => d.data)) }] })
       });
-      if (resp.status === 504 && attempt < 3) continue;
+      if ((resp.status === 504 || resp.status === 429) && attempt < 3) continue;
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const text = (await resp.json()).choices?.[0]?.message?.content || '无返回内容';
 
