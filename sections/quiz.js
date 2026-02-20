@@ -1,5 +1,6 @@
 // Auto-number questions: derive chapter prefix from filename
 const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
+const VERSION = 'bd61e3c';
 
 // AI grading config — update these after deploying your Cloudflare Worker
 const WORKER_URL = 'https://blog-proxy.yangjt22.workers.dev';
@@ -114,23 +115,38 @@ document.addEventListener('click', e => {
   }
 });
 
-// Font size controls
+// Settings panel: font size, theme, version
 const FONT_KEY = 'fontSize';
+const THEME_KEY = 'theme';
 const sizes = ['0.75rem','0.85rem','0.95rem','1.05rem','1.18rem','1.32rem','1.5rem'];
 let sizeIdx = parseInt(localStorage.getItem(FONT_KEY) || '2');
 
 const ctrl = document.createElement('div');
 ctrl.className = 'font-controls';
-ctrl.innerHTML = '<span class="fc-toggle">A</span><div class="fc-inner"><input type="range" min="0" max="6" step="1"><span></span></div>';
+ctrl.innerHTML = `
+  <span class="fc-toggle">⚙</span>
+  <div class="fc-inner">
+    <label>字号</label><input type="range" min="0" max="6" step="1"><span class="fc-size"></span>
+    <label>主题</label>
+    <button class="fc-theme">🌙</button>
+    <span class="fc-ver" title="git commit">${VERSION}</span>
+  </div>`;
 document.body.appendChild(ctrl);
 
-const slider = ctrl.querySelector('input');
-const label = ctrl.querySelector('.fc-inner span');
-const applySize = () => { document.documentElement.style.fontSize = sizes[sizeIdx]; label.textContent = sizes[sizeIdx]; slider.value = sizeIdx; };
+const slider = ctrl.querySelector('input[type=range]');
+const sizeLabel = ctrl.querySelector('.fc-size');
+const applySize = () => { document.documentElement.style.fontSize = sizes[sizeIdx]; sizeLabel.textContent = sizes[sizeIdx]; slider.value = sizeIdx; };
+
+// Theme
+const themeBtn = ctrl.querySelector('.fc-theme');
+let dark = localStorage.getItem(THEME_KEY) !== 'light';
+const applyTheme = () => { document.body.classList.toggle('light', !dark); themeBtn.textContent = dark ? '🌙' : '☀️'; };
+themeBtn.addEventListener('click', () => { dark = !dark; localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light'); applyTheme(); });
 
 ctrl.querySelector('.fc-toggle').addEventListener('click', () => ctrl.classList.toggle('open'));
 slider.addEventListener('input', () => { sizeIdx = parseInt(slider.value); localStorage.setItem(FONT_KEY, sizeIdx); applySize(); });
 applySize();
+applyTheme();
 
 // Section-level grade buttons: insert after each h2, covering questions until next h2
 function makeSectionGradeBtn(questions) {

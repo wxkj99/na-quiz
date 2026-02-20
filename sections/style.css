@@ -11,6 +11,19 @@
   --blank-bg: #313244;
 }
 
+body.light {
+  --bg: #f5f5f0;
+  --surface: #ffffff;
+  --border: #d0d0c8;
+  --text: #2a2a2a;
+  --muted: #888880;
+  --accent: #2563eb;
+  --green: #16a34a;
+  --yellow: #b45309;
+  --red: #dc2626;
+  --blank-bg: #f0f0ea;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; max-width: 100%; }
 
 body {
@@ -116,10 +129,13 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
   color: var(--muted);
 }
 .font-controls .fc-toggle { cursor: pointer; user-select: none; color: var(--text); }
-.font-controls .fc-inner { display: none; align-items: center; gap: 0.5rem; }
+.font-controls .fc-inner { display: none; align-items: center; gap: 0.5rem; flex-wrap: wrap; max-width: 280px; }
 .font-controls.open .fc-inner { display: flex; }
-.font-controls span { min-width: 2.2rem; text-align: center; color: var(--text); }
+.font-controls label { color: var(--muted); white-space: nowrap; }
+.font-controls .fc-size { min-width: 2.2rem; text-align: center; color: var(--text); }
 .font-controls input[type=range] { width: 90px; accent-color: var(--accent); cursor: pointer; }
+.font-controls .fc-theme { background: none; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; padding: 0.1rem 0.4rem; font-size: 0.85rem; }
+.font-controls .fc-ver { color: var(--muted); font-family: monospace; font-size: 0.72rem; }
 
 /* answer reveal */
 .answer-btn {
