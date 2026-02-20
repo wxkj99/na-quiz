@@ -30,6 +30,15 @@ function checkClientRate() {
   return r.count <= RATE_LIMIT;
 }
 
+function checkTestRate() {
+  const now = Date.now();
+  const r = JSON.parse(localStorage.getItem('test-rate') || '{"count":0,"start":0}');
+  if (now - r.start > RATE_WINDOW) { r.count = 0; r.start = now; }
+  r.count++;
+  localStorage.setItem('test-rate', JSON.stringify(r));
+  return r.count <= 5;
+}
+
 function cacheKey(id, inputs) { return 'grade:' + id + ':' + inputs.join('|'); }
 
 function getQuestionData(q) {
@@ -243,6 +252,7 @@ apiModal.querySelector('.fc-api-test').addEventListener('click', async () => {
   const key = apiKeyEl.value.trim();
   const model = apiModelEl.value.trim() || AI_MODEL;
   if (!url || !key) { apiStatus.textContent = '请填写接入点和 Key'; apiStatus.style.color = 'var(--red)'; return; }
+  if (!checkTestRate()) { apiStatus.textContent = '测试过于频繁，请稍后再试。'; apiStatus.style.color = 'var(--red)'; return; }
   apiStatus.textContent = '测试中…'; apiStatus.style.color = 'var(--muted)';
   try {
     const resp = await fetch(url.replace(/\/$/, '') + '/chat/completions', {
