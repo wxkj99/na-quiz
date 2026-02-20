@@ -135,6 +135,8 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
 .font-controls .fc-sep { width: 100%; border-top: 1px solid var(--border); margin: 0.2rem 0; }
 .font-controls .fc-api-open { background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); padding: 0.15rem 0.5rem; cursor: pointer; font-size: 0.78rem; }
 .font-controls .fc-api-open:hover { border-color: var(--accent); color: var(--accent); }
+.font-controls .fc-clear-page { background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); padding: 0.15rem 0.5rem; cursor: pointer; font-size: 0.78rem; }
+.font-controls .fc-clear-page:hover { border-color: var(--red); color: var(--red); }
 
 /* API config modal */
 .api-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
@@ -142,8 +144,11 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
 .api-modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.5rem; width: min(560px, 92vw); display: flex; flex-direction: column; gap: 0.5rem; }
 .api-modal-box h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.2rem; }
 .api-modal-box label { font-size: 0.8rem; color: var(--muted); }
-.api-modal-box input { background: var(--blank-bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); padding: 0.4rem 0.6rem; font-size: 0.88rem; width: 100%; }
-.api-modal-box input:focus { outline: none; border-color: var(--accent); }
+.api-modal-box input:not([type=checkbox]), .api-modal-box select { background: var(--blank-bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); padding: 0.4rem 0.6rem; font-size: 0.88rem; width: 100%; }
+.api-modal-box input:not([type=checkbox]):focus, .api-modal-box select:focus { outline: none; border-color: var(--accent); }
+.api-modal-box .clr-option { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.7rem; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.88rem; color: var(--text); transition: border-color 0.15s; }
+.api-modal-box .clr-option:hover { border-color: var(--accent); }
+.api-modal-box .clr-option input { width: auto; background: none; border: none; padding: 0; accent-color: var(--accent); cursor: pointer; }
 .api-modal-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.3rem; }
 .api-modal-row button { background: none; border: 1px solid var(--border); border-radius: 5px; color: var(--muted); padding: 0.3rem 0.8rem; cursor: pointer; font-size: 0.82rem; }
 .api-modal-row button:hover { border-color: var(--accent); color: var(--accent); }
@@ -172,7 +177,7 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
   margin-top: 0.7rem;
   padding: 0.7rem 1rem;
   background: var(--blank-bg);
-  border-left: 3px solid var(--green);
+  border-left: 3px solid var(--accent);
   border-radius: 0 6px 6px 0;
   font-size: 0.92rem;
 }
@@ -210,6 +215,13 @@ input.blank:focus { border-bottom-color: var(--green); background: #3a3a54; }
 
 .grade-result.correct { border-left-color: var(--green); }
 .grade-result.wrong { border-left-color: var(--red); }
+
+.edited-mark {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--yellow);
+  margin-top: 0.4rem;
+}
 
 /* print */
 @media print {
