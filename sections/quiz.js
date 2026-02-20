@@ -1,6 +1,6 @@
 // Auto-number questions: derive chapter prefix from filename
 const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
-const VERSION = '2026-02-20';
+const VERSION = '2026-02-20 18:00';
 
 // AI grading config
 const WORKER_URL = 'https://blog-proxy.yangjt22.workers.dev';
@@ -39,7 +39,7 @@ function buildPrompt(questions) {
   const items = questions.map(({ qtext, answer, inputs }, i) =>
     `【第${i+1}题】\n题目：${qtext}\n学生答案：${inputs.join(' | ')}\n参考答案：${answer}`
   ).join('\n\n');
-  return `你是一位数值分析课程助教，请批改以下题目。评判标准：数学含义正确即为正确，不要因为符号写法、省略范围等细节扣分。对每题输出一行：【✓正确】【△部分正确】【✗错误】加一句简短点评。用中文，格式简洁。\n\n${items}`;
+  return `批改数值分析题目。数学含义正确即为正确，忽略符号细节。每题仅输出一行：【✓】【△】【✗】加最多10字点评，无需解释。\n\n${items}`;
 }
 
 function showResult(el, text) {
