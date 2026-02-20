@@ -29,7 +29,7 @@ function buildPrompt(questions) {
     const userAns = inputs.length ? inputs.join(' | ') : '（未作答）';
     return `【第${i+1}题】\n题目：${qtext}\n学生答案：${userAns}\n参考答案：${answer}`;
   }).join('\n\n');
-  return `你是一位数值分析课程助教，请批改以下题目。对每题给出：是否正确（或部分正确）、简短点评（1-2句）。用中文回答，格式简洁。\n\n${items}`;
+  return `你是一位数值分析课程助教，请批改以下题目。评判标准：数学含义正确即为正确，不要因为符号写法、省略范围等细节扣分。对每题输出一行：【✓正确】【△部分正确】【✗错误】加一句简短点评。用中文，格式简洁。\n\n${items}`;
 }
 
 async function gradeQuestions(questions, resultEl) {
@@ -59,7 +59,12 @@ async function gradeQuestions(questions, resultEl) {
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
-    resultEl.textContent = data.choices?.[0]?.message?.content || '无返回内容';
+    const text = data.choices?.[0]?.message?.content || '无返回内容';
+    resultEl.textContent = text;
+    resultEl.className = 'grade-result' + (
+      /✓/.test(text) && !/✗|△/.test(text) ? ' correct' :
+      /✗/.test(text) && !/✓|△/.test(text) ? ' wrong' : ''
+    );
   } catch (e) {
     resultEl.textContent = '批改失败：' + e.message;
     resultEl.className = 'grade-result error';
