@@ -1,6 +1,5 @@
 // Auto-number questions
-const prefix = 'na-quiz:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
-const VERSION = '2026-02-20';
+const prefix = 'naq:input:' + (location.pathname.replace(/.*\//, '').replace(/\.[^.]*$/, '') || 'index');
 
 // AI grading config
 const WORKER_URL = 'https://blog-proxy.yangjt22.workers.dev';
@@ -8,7 +7,7 @@ const AI_MODEL = 'glm-4.5-air:free';
 const RATE_WINDOW = 60000;
 
 function clearGradeCache() {
-  Object.keys(localStorage).filter(k => k.startsWith('grade:')).forEach(k => localStorage.removeItem(k));
+  Object.keys(localStorage).filter(k => k.startsWith('naq:grade:')).forEach(k => localStorage.removeItem(k));
 }
 
 function getApiConfig() {
@@ -58,7 +57,7 @@ function checkRate(storageKey, limit) {
   return r.count <= limit;
 }
 
-function cacheKey(id, inputs) { return 'grade:' + id + ':' + inputs.join('|'); }
+function cacheKey(id, inputs) { return 'naq:grade:' + id + ':' + inputs.join('|'); }
 
 function getQuestionData(q) {
   const qtext = q.querySelector('.q-text')?.textContent?.trim() || '';
@@ -91,7 +90,7 @@ function showResult(el, text) {
 }
 
 function updateEditedMark(q, id) {
-  const snap = localStorage.getItem('graded-snap:' + id);
+  const snap = localStorage.getItem('naq:snap:' + id);
   const resultEl = q.querySelector('.grade-result');
   if (!resultEl) return;
   const current = [...q.querySelectorAll('textarea, input.blank')].map(el => el.value.trim()).join('|');
@@ -172,7 +171,7 @@ async function gradeQuestions(qEls, summaryEl, force = false) {
       return;
     }
 
-    if (!checkRate('grade-rate', 5)) {
+    if (!checkRate('naq:rate:grade', 5)) {
       if (summaryEl) { summaryEl.textContent = '请求过于频繁，请稍后再试。'; summaryEl.className = 'grade-result error'; summaryEl.style.display = 'block'; }
       return;
     }
@@ -200,7 +199,7 @@ async function gradeQuestions(qEls, summaryEl, force = false) {
         if (needGrade.length === 1) {
           const result = text.replace(/^===题\d+===\s*/, '').trim();
           localStorage.setItem(needGrade[0].key, result);
-          localStorage.setItem('graded-snap:' + needGrade[0].id, needGrade[0].data.inputs.join('|'));
+          localStorage.setItem('naq:snap:' + needGrade[0].id, needGrade[0].data.inputs.join('|'));
           const targetEl = needGrade[0].q.querySelector('.grade-result') || summaryEl;
           showResult(targetEl, result);
           if (summaryEl && targetEl !== summaryEl) summaryEl.style.display = 'none';
@@ -213,7 +212,7 @@ async function gradeQuestions(qEls, summaryEl, force = false) {
           needGrade.forEach(({ q, key, id, data }, i) => {
             const part = parseOk ? parsed[i+1] : text;
             localStorage.setItem(key, part);
-            localStorage.setItem('graded-snap:' + id, data.inputs.join('|'));
+            localStorage.setItem('naq:snap:' + id, data.inputs.join('|'));
             const el = q.querySelector('.grade-result');
             if (el) showResult(el, part);
           });
@@ -229,6 +228,7 @@ async function gradeQuestions(qEls, summaryEl, force = false) {
   }
 }
 
+if (document.querySelector('.question')) {
 document.querySelectorAll('.question').forEach((q, i) => {
   const id = prefix + '-' + (i + 1);
   q.dataset.gradeId = id;
@@ -260,8 +260,8 @@ document.querySelectorAll('.question').forEach((q, i) => {
   const cached = localStorage.getItem(cacheKey(id, data.inputs));
   if (cached && data.inputs.some(v => v)) {
     showResult(resultEl, cached);
-    if (!localStorage.getItem('graded-snap:' + id))
-      localStorage.setItem('graded-snap:' + id, data.inputs.join('|'));
+    if (!localStorage.getItem('naq:snap:' + id))
+      localStorage.setItem('naq:snap:' + id, data.inputs.join('|'));
   }
 
   addGradeBtnListeners(btn, () => [[q], resultEl]);
@@ -279,6 +279,7 @@ document.addEventListener('click', e => {
     e.target.textContent = visible ? '隐藏答案' : '显示答案';
   }
 });
+} // end if (.question)
 
 // Settings panel
 const FONT_KEY = 'fontSize';
@@ -290,10 +291,10 @@ const ctrl = document.createElement('div');
 ctrl.className = 'font-controls';
 ctrl.innerHTML = `<span class="fc-toggle">⚙</span><div class="fc-inner">
   <label>字号</label><input type="range" min="0" max="6" step="1"><span class="fc-size"></span>
-  <label>主题</label><button class="fc-theme">🌙</button><span class="fc-ver">${VERSION}</span>
+  <label>主题</label><button class="fc-theme">🌙</button>
   <div class="fc-sep"></div>
   <button class="fc-api-open">配置 API</button>
-  <button class="fc-clear-page">清空本页缓存</button>
+  <button class="fc-clear-page">缓存管理</button>
 </div>`;
 document.body.appendChild(ctrl);
 
@@ -331,13 +332,18 @@ document.body.appendChild(apiModal);
 const clearModal = document.createElement('div');
 clearModal.className = 'api-modal';
 clearModal.innerHTML = `<div class="api-modal-box">
-  <h3>清空缓存</h3>
+  <h3>缓存管理</h3>
   <label class="clr-option"><input class="clr-inputs" type="checkbox"> 题目输入（本页）</label>
   <label class="clr-option"><input class="clr-grade" type="checkbox"> 批改结果（本页）</label>
   <label class="clr-option"><input class="clr-api" type="checkbox"> API 配置</label>
-  <div class="api-modal-row"><button class="clr-confirm">清除所选</button><button class="clr-close">关闭</button></div>
+  <div class="api-modal-row"><button class="clr-confirm">清除所选</button><button class="clr-export">导出所选</button><button class="clr-import">导入</button><input class="clr-import-file" type="file" accept=".json" style="display:none"><button class="clr-close">关闭</button></div>
 </div>`;
 document.body.appendChild(clearModal);
+
+if (!document.querySelector('.question')) {
+  clearModal.querySelector('.clr-inputs').closest('label').childNodes[1].textContent = ' 题目输入（所有页面）';
+  clearModal.querySelector('.clr-grade').closest('label').childNodes[1].textContent = ' 批改结果（所有页面）';
+}
 
 clearModal.querySelector('.clr-close').addEventListener('click', () => clearModal.classList.remove('open'));
 clearModal.querySelector('.clr-confirm').addEventListener('click', () => {
@@ -352,7 +358,7 @@ clearModal.querySelector('.clr-confirm').addEventListener('click', () => {
     document.querySelectorAll('textarea, input.blank').forEach(el => { el.value = ''; });
   }
   if (doGrade) {
-    Object.keys(localStorage).filter(k => k.startsWith('grade:' + prefix) || k.startsWith('graded-snap:' + prefix)).forEach(k => localStorage.removeItem(k));
+    Object.keys(localStorage).filter(k => k.startsWith('naq:grade:' + prefix) || k.startsWith('naq:snap:' + prefix)).forEach(k => localStorage.removeItem(k));
     document.querySelectorAll('.grade-result').forEach(el => { el.style.display = 'none'; });
     document.querySelectorAll('.edited-mark').forEach(el => el.remove());
   }
@@ -362,6 +368,44 @@ clearModal.querySelector('.clr-confirm').addEventListener('click', () => {
     sendAnswerEl.checked = true;
   }
   clearModal.classList.remove('open');
+});
+
+function getSelectedKeys() {
+  const doInputs = clearModal.querySelector('.clr-inputs').checked;
+  const doGrade = clearModal.querySelector('.clr-grade').checked;
+  const doApi = clearModal.querySelector('.clr-api').checked;
+  return Object.keys(localStorage).filter(k =>
+    (doInputs && k.startsWith(prefix)) ||
+    (doGrade && (k.startsWith('naq:grade:') || k.startsWith('naq:snap:'))) ||
+    (doApi && ['user-api-url','user-api-key','user-api-model','user-api-type','send-answer','user-invite'].includes(k))
+  );
+}
+
+clearModal.querySelector('.clr-export').addEventListener('click', () => {
+  const keys = getSelectedKeys();
+  if (!keys.length) return;
+  const data = Object.fromEntries(keys.map(k => [k, localStorage.getItem(k)]));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+  a.download = 'na-quiz-cache.json';
+  a.click();
+});
+
+const importFile = clearModal.querySelector('.clr-import-file');
+clearModal.querySelector('.clr-import').addEventListener('click', () => importFile.click());
+importFile.addEventListener('change', () => {
+  const file = importFile.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      Object.entries(data).forEach(([k, v]) => localStorage.setItem(k, v));
+      location.reload();
+    } catch { alert('文件格式错误'); }
+  };
+  reader.readAsText(file);
+  importFile.value = '';
 });
 
 const apiUrlEl = apiModal.querySelector('.fc-api-url');
@@ -398,7 +442,7 @@ apiModal.querySelector('.fc-api-test').addEventListener('click', async () => {
   const key = apiKeyEl.value.trim();
   const model = apiModelEl.value.trim() || AI_MODEL;
   if (!url || !key) { apiStatus.textContent = '请填写接入点和 Key'; apiStatus.style.color = 'var(--red)'; return; }
-  if (!checkRate('test-rate', 5)) { apiStatus.textContent = '测试过于频繁，请稍后再试。'; apiStatus.style.color = 'var(--red)'; return; }
+  if (!checkRate('naq:rate:test', 5)) { apiStatus.textContent = '测试过于频繁，请稍后再试。'; apiStatus.style.color = 'var(--red)'; return; }
   apiStatus.textContent = '测试中…'; apiStatus.style.color = 'var(--muted)';
   try {
     const req = buildRequest({ url: url.replace(/\/$/, ''), key, model, type: apiTypeEl.value, invite: null },
@@ -428,6 +472,7 @@ function makeSectionGradeBtn(qEls) {
   return wrap;
 }
 
+if (document.querySelector('.question')) {
 [...document.querySelectorAll('h2')].forEach(h2 => {
   const sectionQs = [];
   let el = h2.nextElementSibling;
@@ -448,3 +493,4 @@ pageResult.style.display = 'none';
 addGradeBtnListeners(pageBtn, () => [[...document.querySelectorAll('.question')], pageResult]);
 document.body.appendChild(pageBtn);
 document.body.appendChild(pageResult);
+} // end if (.question)
